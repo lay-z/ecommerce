@@ -1,0 +1,26 @@
+.navbar-default{
+	/*stuff to modify navbar-default placed here, this will be the last loaded setting	*/
+}
+.outline{
+	border-style:solid;
+	border-width: 2px;
+}
+
+.navbar-brand > img {
+  object-fit: contain;
+  max-height: 200%;
+  height: 200%;
+    margin-top:-10%;
+}
+
+.full {
+    height: 100%;
+}
+
+.box {
+    height:100px;
+    width: 100%;
+    background-color:  red;
+    padding: 5px;
+    position:relative;
+}

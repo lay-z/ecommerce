@@ -1,0 +1,83 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/priyav/.nvm/v0.10.39/bin/node',
+1 verbose cli   '/home/priyav/.nvm/v0.10.39/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'body_parser' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.39
+4 verbose cache add [ 'body_parser', null ]
+5 verbose cache add name=undefined spec="body_parser" args=["body_parser",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'body_parser',
+6 verbose parsed url   path: 'body_parser',
+6 verbose parsed url   href: 'body_parser' }
+7 silly lockFile 666a7871-body-parser body_parser
+8 verbose lock body_parser /home/priyav/.npm/666a7871-body-parser.lock
+9 silly lockFile 666a7871-body-parser body_parser
+10 silly lockFile 666a7871-body-parser body_parser
+11 verbose addNamed [ 'body_parser', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile ea49b5a7-body-parser body_parser@
+14 verbose lock body_parser@ /home/priyav/.npm/ea49b5a7-body-parser.lock
+15 silly addNameRange { name: 'body_parser', range: '*', hasData: false }
+16 verbose request where is /body_parser
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id 18b5408673951ce0
+19 verbose url raw /body_parser
+20 verbose url resolving [ 'https://registry.npmjs.org/', './body_parser' ]
+21 verbose url resolved https://registry.npmjs.org/body_parser
+22 verbose request where is https://registry.npmjs.org/body_parser
+23 info trying registry request attempt 1 at 10:19:04
+24 http GET https://registry.npmjs.org/body_parser
+25 http 404 https://registry.npmjs.org/body_parser
+26 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+26 verbose headers   'content-type': 'application/json',
+26 verbose headers   'cache-control': 'max-age=0',
+26 verbose headers   'content-length': '51',
+26 verbose headers   'accept-ranges': 'bytes',
+26 verbose headers   date: 'Fri, 17 Jul 2015 09:19:05 GMT',
+26 verbose headers   via: '1.1 varnish',
+26 verbose headers   age: '0',
+26 verbose headers   connection: 'keep-alive',
+26 verbose headers   'x-served-by': 'cache-sjc3124-SJC',
+26 verbose headers   'x-cache': 'MISS',
+26 verbose headers   'x-cache-hits': '0',
+26 verbose headers   'x-timer': 'S1437124745.680375,VS0,VE37' }
+27 silly registry.get cb [ 404,
+27 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+27 silly registry.get     'content-type': 'application/json',
+27 silly registry.get     'cache-control': 'max-age=0',
+27 silly registry.get     'content-length': '51',
+27 silly registry.get     'accept-ranges': 'bytes',
+27 silly registry.get     date: 'Fri, 17 Jul 2015 09:19:05 GMT',
+27 silly registry.get     via: '1.1 varnish',
+27 silly registry.get     age: '0',
+27 silly registry.get     connection: 'keep-alive',
+27 silly registry.get     'x-served-by': 'cache-sjc3124-SJC',
+27 silly registry.get     'x-cache': 'MISS',
+27 silly registry.get     'x-cache-hits': '0',
+27 silly registry.get     'x-timer': 'S1437124745.680375,VS0,VE37' } ]
+28 silly lockFile ea49b5a7-body-parser body_parser@
+29 silly lockFile ea49b5a7-body-parser body_parser@
+30 error 404 404 Not Found: body_parser
+30 error 404
+30 error 404 'body_parser' is not in the npm registry.
+30 error 404 You should bug the author to publish it
+30 error 404
+30 error 404 Note that you can also install from a
+30 error 404 tarball, folder, or http url, or git url.
+31 error System Linux 3.16.0-43-generic
+32 error command "/home/priyav/.nvm/v0.10.39/bin/node" "/home/priyav/.nvm/v0.10.39/bin/npm" "install" "body_parser"
+33 error cwd /home/priyav/WebstormProjects/ecommerce
+34 error node -v v0.10.39
+35 error npm -v 1.4.28
+36 error code E404
+37 verbose exit [ 1, true ]

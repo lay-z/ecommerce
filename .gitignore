@@ -1,0 +1,6 @@
+
+# remove node modules from git
+node_modules/**
+
+# Remove bower components
+bower_components/**
