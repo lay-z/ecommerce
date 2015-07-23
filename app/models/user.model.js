@@ -12,20 +12,20 @@ var validatePassword = function(password) {
 
 
 var UserSchema = new Schema({
-    firstname: {
+    first_name: {
         type: String,
         trim: true,
-        required: true
+        required: "first_name is required"
     },
     surname:{
         type: String,
         trim: true,
-        required: true
+        required: "surname is required"
     },
     email: {
         type: String,
         trim: true,
-        required: true,
+        required: "email address is required",
         unique: true,
         match: [/.+\@.+\..+/, 'Please fill a valid email address']
     },
@@ -39,13 +39,13 @@ var UserSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Ripple_Account'
     },
-    paypalAccount: {
+    paypal_account: {
         type:String,
         default:''
     },
     tel_number: {
-        type: Number,
-        required: true
+        type: String,
+        required: "tel_number is required"
     }
 });
 

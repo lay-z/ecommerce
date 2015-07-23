@@ -4,5 +4,6 @@
  */
 module.exports = {
     db: "mongodb://localhost/ecommerce",
-    port: 3000
+    port: 3000,
+    testdb: "mongodb://localhost/ecommerce-test"
 }

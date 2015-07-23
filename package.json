@@ -21,7 +21,7 @@
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha app/tests",
     "start": "node server.js"
   },
   "repository": {
