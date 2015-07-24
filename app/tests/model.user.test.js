@@ -1,23 +1,15 @@
-// Intialize database and models
+process.env.NODE_ENV = 'test';
 
+console.log("Connecting to DB through model.user.test.js");
+require('../../app/initDB').init();
 var mongoose = require('mongoose'),
-    config = require('../../config/config.js')
+    should = require('chai').should(),
+    User = mongoose.model('User');
 
+// Global User for use in functions
+var user;
 
-mongoose.connect(config.testdb, function(err) {
-    if (err) {
-        console.error(chalk.red('Could not connect to MongoDB!'));
-        console.log(chalk.red(err));
-    }
-});
-
-require('../../app/models/models').initialize();
-var User = mongoose.model('User');
-
-
-
-var user, user2
-
+// Begin tests
 describe('User', function() {
     beforeEach(function() {
         user = {
@@ -33,7 +25,12 @@ describe('User', function() {
 
     afterEach(function(done){
         User.remove().exec();
-        done()
+        done();
+    });
+
+    after(function(done) {
+        console.log("in after block");
+        mongoose.disconnect(done);
     });
 
 
@@ -43,10 +40,10 @@ describe('User', function() {
         });
 
         it("Shouldn't be able to save with invalid email address", function(done){
-            user.email = "invalidEmailAddress.com"
+            user.email = "invalidEmailAddress.com";
             new User(user).save(function(err) {
-                if(err) done()
-                throw new Error();
+                err.should.exist;
+                done()
             });
         });
     });

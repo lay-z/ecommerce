@@ -105,6 +105,7 @@ Ripple_Account_Schema.methods.create_ripple_submit= function(payObj, callback) {
 
 // Module takes in TODO
 Ripple_Account_Schema.methods.setTrust = function (trust, callback) {
+    // TODO validate trust object?
     var RESTmethod_extendTrust = '/v1/accounts/' + this.address + '/trustlines?validated=true';
     var trustObj = {
         "secret": this.secret,

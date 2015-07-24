@@ -41,7 +41,8 @@ var UserSchema = new Schema({
     },
     paypal_account: {
         type:String,
-        default:''
+        default:'',
+        match: [/.+\@.+\..+/, 'Please fill a valid paypal email address']
     },
     tel_number: {
         type: String,
