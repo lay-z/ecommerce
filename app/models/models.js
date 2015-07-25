@@ -3,7 +3,7 @@
  */
 
 //  Initiazlises all mongoose models
-var models = ['user.model.js', 'ripple.model.js'];
+var models = ['ripple.model.js', 'user.model.js'];
 
 exports.initialize = function() {
     var l = models.length;
