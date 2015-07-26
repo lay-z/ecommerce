@@ -46,6 +46,7 @@ describe('User', function() {
             user.email = "invalidEmailAddress.com";
             User.save_user_and_wallet(user, null, function(err) {
                 err.should.exist;
+                err.should.have.deep.property("success", false);
                 done()
             });
         });
@@ -54,9 +55,11 @@ describe('User', function() {
            User.save_user_and_wallet(user, null, function(err){
                if (err) done(err);
 
-               User.save_user_and_wallet(user2, null, function(err){
-                   done();
-               })
+               User.save_user_and_wallet(user2, null, function(err) {
+                   err.should.exist;
+                   err.should.have.deep.property("success", false);
+                   done()
+               });
            })
         })
     });

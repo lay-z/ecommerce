@@ -1,6 +1,7 @@
 /**
  * Created by priyav on 17/07/15.
  */
+'use strict';
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
@@ -57,13 +58,11 @@ UserSchema.methods.authenticate = function (password) {
 
 UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
     var user = new User(user);
+    var wallet = new Ripple_Account(wallet);
 
     // Check if User email address already exists before continue
     check_if_email_exists(user.email, function(err){
         if (err) return callback(err);
-
-        var wallet = new Ripple_Account(wallet);
-
 
 
         // Update the User to also include pointer to ripple wallet
@@ -71,7 +70,7 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
 
         user.save(function (err) {
             if (err) {
-                var e = mongoose_validation(err);
+                var e = create_error_object(err);
                 return callback(e);
             }
             wallet.save(function (err) {
@@ -90,14 +89,14 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
 var User = mongoose.model('User', UserSchema);
 
 // Takes in mongoose error argument and returns error descriptor
-var mongoose_validation = function(err) {
+var create_error_object = function(err) {
     //console.log(err);
     var objKeys = Object.keys(err.errors);
     var fields = {};
     var member;
 
     // Construct object with fields and information on field
-    for(i in objKeys) {
+    for(var i in objKeys) {
         member = objKeys[i];
         fields[member] = err.errors[member].message;
     }
@@ -132,3 +131,4 @@ var check_if_email_exists = function (email, callback) {
         }
     });
 };
+

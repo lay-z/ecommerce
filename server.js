@@ -24,7 +24,7 @@ app.use(express.static(static_folder));
 
 app.get('/v1/account/*/getBalance', function(req, res){
     var account = req.url.split('/')[3];
-    Ripple_Account.getAccountBalances(account, function(response){
+    Ripple_Account.getBalances(account, function(response){
        res.end(response);
     })
 });
