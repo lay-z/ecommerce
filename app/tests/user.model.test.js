@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 // Global User for use in functions
-var user, user2;
+var user, user2, wallet;
 
 // Begin tests
 describe('User', function() {
@@ -30,6 +30,11 @@ describe('User', function() {
             tel_number: "07559198901"
         };
 
+        wallet = {
+            address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+            secret: "snoPBrXtMeMyMHUVTgbuqAfg1SUTb"
+        };
+
     });
 
     afterEach(function(done){
@@ -38,8 +43,19 @@ describe('User', function() {
     });
 
     describe('#save', function() {
-        it('should save User into empty database', function (done) {
-            User.save_user_and_wallet(user, null, done);
+        it('should save User and ripple account into empty database', function (done) {
+            User.save_user_and_wallet(user, wallet, function(err){
+                should.not.exist(err);
+                User.findOne({email: user.email}, function(err, document) {
+                    should.not.exist(err);
+
+                    var saved_wallet = document.ripple_account[0];
+                    saved_wallet.getBalances(function(err, balances){
+                        balances.success.should.be.ok;
+                        done();
+                    });
+                })
+            });
         });
 
         it("Shouldn't be able to save with invalid email address", function(done){

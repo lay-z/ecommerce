@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    Ripple_Account = mongoose.model('Ripple_Account');
+    Ripple_Account = mongoose.model('Ripple_Account'),
+    assert = require('assert');
 
 
 module.exports.save_user = function(req, res) {
@@ -12,7 +13,7 @@ module.exports.save_user = function(req, res) {
 
             res.json({success: true});
         });
-    }
+    };
 
     if(req.body.ripple_account && req.body.secret) {
         // Check if correct ripple_details have been sent/ exist (?)
@@ -29,18 +30,7 @@ module.exports.save_user = function(req, res) {
     }
 };
 
-// Middle ware to make sure data is raw JSON
-module.exports.checkJSON = function(req, res, next) {
-    if (req.get('Content-Type') !== 'application/json') {
-        return res.status(400).json({
-            success: false,
-            error: {
-                message:"Content type must be application/json"
-            }
-        });
-    }
-    next();
-};
+
 
 module.exports.get_ripple_account_information = function(req, res) {
     // Parse out email address from request URL
@@ -58,30 +48,22 @@ module.exports.get_ripple_account_information = function(req, res) {
             });
         }
 
-        // Get users ripple account
-       Ripple_Account.findById(user.ripple_account, function(err, account) {
-           // If error, proess and send back to user
-           if (err) return res.status(400).json(err);
+       // Send request off for account balances
+       user.ripple_account[0].getBalances(function(err, balance) {
+           if (err) return res.status(500).json(err);
 
-           // Send request off for account balances
-           account.getBalances(function(err, balance) {
-
-               // if error, print to console and send back to user
-               if (err) return res.status(500).json(err);
-
-               // After receiving information process and send back nicely to request
-               if(process_rippleBalances(balance)) {
-                   return res.send(balance);
-               };
-               res.status(500).send(balance);
-           })
+           // After receiving information process and send back nicely to request
+           if(process_rippleBalances(balance)) {
+               return res.send(balance);
+           };
+           res.status(500).send(balance);
        })
     });
 };
 
 // Process getBalance request and formats data into nice objects to be
 // sent back. Returns true if getting balance was successful else returns false
-// If returning balance was unsuccessful.
+// If returning balance was unsuccessful
 // Directly modifies balance object
 var process_rippleBalances = function(balance) {
     if(!balance.success) {
@@ -105,8 +87,13 @@ var process_rippleBalances = function(balance) {
     delete balance.validated;
 
     return true;
-}
+};
 
+
+module.exports.transfer = function(req, res) {
+    // Search for user
+
+};
 //TODO validation check for ripple rest running
 
 

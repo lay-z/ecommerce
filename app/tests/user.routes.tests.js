@@ -10,8 +10,7 @@ var chai = require('chai'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account');
 
-// Set chai to work with chai-things
-
+// chai-things used for validating arrays
 chai.use(require('chai-things'));
 
 
@@ -104,12 +103,10 @@ describe('User routes', function() {
                     if(err || (res.body.success === false)) throw new Error();
                     User.findOne({email: user2.email}, function(err, document) {
                         if(err) throw err;
-                        Ripple_Account.findById(document.ripple_account, function(err, document) {
-                            if (err) throw err;
-                            should.exist(document.address);
-                            should.exist(document.secret);
-                            done();
-                        })
+                        console.log(document)
+                        document.ripple_account.should.contain.a.thing.with.a.property("address")
+                        document.ripple_account.should.contain.a.thing.with.a.property("secret")
+                        done();
                     })
                 })
         });
@@ -122,9 +119,14 @@ describe('User routes', function() {
 
     describe('Getting user account information', function() {
 
+        // Master account information
+        var master_account = {
+            address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+            secret: "snoPBrXtMeMyMHUVTgbuqAfg1SUTb"
+        };
         var ripple_account = {
-            address: "rwy8vJNsfFW8SLguKB9YcPBsRbtvnhiMv4",
-            secret: "sa3FxSh1xH7kLz79Gg9PpebTPaVvL"
+            address: "rnja8gckAmRZ7VA1VGKVsgthjJhcjaouTS",
+            secret: "sh1hMr2ZLTZj21JwCTAiVBrwFNHZ7"
         };
 
         var user = {
@@ -138,16 +140,23 @@ describe('User routes', function() {
 
         // Set up User and wallet in db
         before(function(done){
-            User.save_user_and_wallet(user, ripple_account, done);
+            // Gives set up enough time to complete transactions
+            this.timeout(5500);
+
+            User.save_user_and_wallet(user, ripple_account, function(){});
+            // Send XRP to account
+            new Ripple_Account(master_account).send_payment({currency: "XRP",
+                                        amount: 250, payee: ripple_account.address},
+                done);
         });
 
         after(function() {
             User.remove().exec();
             Ripple_Account.remove().exec();
-        })
+        });
 
 
-       it("Should send account information if user exists", function(done){
+       it("Should send empty array of balances if user exists but has not deposited any money", function(done){
 
             // Make get request to /v1/user/:email
             request.get('/v1/user/' + user.email)
@@ -156,8 +165,7 @@ describe('User routes', function() {
                 .end(function(err, res) {
                     if(err) throw err;
                     res.body.should.have.deep.property("success", true);
-                    res.body.balances.should.include.a.thing.with.deep.property("value");
-                    res.body.balances.should.include.a.thing.with.deep.property("currency", "KSH");
+                    res.body.balances.should.be.empty;
                     done();
                 });
        });
@@ -170,6 +178,12 @@ describe('User routes', function() {
             //      Success:false field
             //      More error information
         }); */
+
+        /*
+        TODO
+       it("Should return correct balance of issued out ksh")
+
+         */
 
         it("Should return correct error object if account wallet has not yet been activated", function(done) {
             var correctError = {
@@ -197,7 +211,7 @@ describe('User routes', function() {
                 });
         });
 
-        it("Should return error object if request called for user that doesn't exist", function(done){
+        it.only("Should return error object if request called for user that doesn't exist", function(done){
             var accountNotValidError = {
                 success: false,
                 message: "Invalid email address; email address has not been registered"
