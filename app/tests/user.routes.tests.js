@@ -103,7 +103,6 @@ describe('User routes', function() {
                     if(err || (res.body.success === false)) throw new Error();
                     User.findOne({email: user2.email}, function(err, document) {
                         if(err) throw err;
-                        console.log(document)
                         document.ripple_account.should.contain.a.thing.with.a.property("address")
                         document.ripple_account.should.contain.a.thing.with.a.property("secret")
                         done();
@@ -211,7 +210,7 @@ describe('User routes', function() {
                 });
         });
 
-        it.only("Should return error object if request called for user that doesn't exist", function(done){
+        it("Should return error object if request called for user that doesn't exist", function(done){
             var accountNotValidError = {
                 success: false,
                 message: "Invalid email address; email address has not been registered"

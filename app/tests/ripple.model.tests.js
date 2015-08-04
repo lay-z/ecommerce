@@ -40,7 +40,6 @@ describe("Ripple_Account Tests", function() {
         it("Should be able to generate static wallets", function(done) {
             Ripple_Account.generate_wallet(function(err, wallet) {
                 should.not.exist(err);
-                console.log(wallet);
 
                 wallet.should.have.deep.property("address");
                 wallet.should.have.deep.property("secret");
@@ -106,7 +105,6 @@ describe("Ripple_Account Tests", function() {
         it("Should be able to create trust line between bank and ripple account with enough XRP", function(done) {
             this.timeout(10000)
             customer.extendTrust(bank.address, function(err, body){
-                console.log(body);
                 should.not.exist(err);
                 body.success.should.be.ok;
                 body.should.have.deep.property("trustline.counterparty", bank.address);

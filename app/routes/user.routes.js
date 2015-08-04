@@ -7,5 +7,5 @@ module.exports.routes = function(app) {
     app.post('/v1/user/*', middleware.checkJSON);
     app.post('/v1/user/createUser',  json_parser, user_methods.save_user);
     app.get('/v1/user/:email', middleware.validate_user, user_methods.get_ripple_account_information);
-    //app.get('v1/user/:email/transfer', user_methods.validate_user, )
+    //app.post('v1/user/:email/transfer', user_methods.validate_user, )
 };

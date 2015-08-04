@@ -34,31 +34,18 @@ module.exports.save_user = function(req, res) {
 
 module.exports.get_ripple_account_information = function(req, res) {
     // Parse out email address from request URL
-    var user_email = req.params.email;
+    var user = req.user;
 
-    // get Mongoose user obj
-    User.findOne({email: user_email}, function(err, user) {
-        // If error, process and send back to user
-        if (err) return res.status(400).json(err);
+   // Send request off for account balances
+   user.ripple_account[0].getBalances(function(err, balance) {
+       if (err) return res.status(500).json(err);
 
-        if(user === null) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid email address; email address has not been registered"
-            });
-        }
-
-       // Send request off for account balances
-       user.ripple_account[0].getBalances(function(err, balance) {
-           if (err) return res.status(500).json(err);
-
-           // After receiving information process and send back nicely to request
-           if(process_rippleBalances(balance)) {
-               return res.send(balance);
-           };
-           res.status(500).send(balance);
-       })
-    });
+       // After receiving information process and send back nicely to request
+       if(process_rippleBalances(balance)) {
+           return res.send(balance);
+       };
+       res.status(500).send(balance);
+   })
 };
 
 // Process getBalance request and formats data into nice objects to be
