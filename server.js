@@ -10,7 +10,7 @@ var express = require('express'),
     url_parser = body_parser.urlencoded({"extended":false}),
     //mongoose = require('mongoose'),
     chalk = require('chalk'),
-    routes = require('./app/routes/user.routes').routes,
+    routes = require('./app/routes/export.routes').routes,
     static_folder = (path.join(__dirname, 'global'));
 
 // Initialize application

@@ -57,7 +57,7 @@ Ripple_Account_Schema.methods.send_payment = function(options, callback) {
 
     // Create payment object
     self.create_payment_object(options, function(err, payment){
-       if(err) return callback(err);
+       if(err) return callback(err, payment);
         // Submit transaction
         var post_args = {
             url : '/v1/accounts/' + self.address + '/payments?validated=true',
@@ -84,6 +84,7 @@ var submit = function(post_args, callback) {
         var error = null;
         if(!body.success) {
             error = new Error("Submission failed. check body for error details")
+            console.log(body);
         }
         callback(error, body)
     })
@@ -109,11 +110,15 @@ var get_url = function(url, callback) {
 Ripple_Account_Schema.methods.create_payment_object= function(options, callback) {
     // Validate payment object
     if(!validate_pay_options(options))
-        return callback(new Error("create_payment_object called without all required fields"));
+        return callback(new Error(), {
+            message: "create_payment_object called without all required fields",
+            success: false
+        });
 
     var self = this;
     var issuer = "";
     if(options.issuer) issuer = options.issuer;
+    console.log(issuer)
 
     var payment = {
         "secret": self.secret,
@@ -189,8 +194,6 @@ Ripple_Account_Schema.methods.extendTrust = function (ripple_address, callback) 
             body: body
         };
         submit(options, function(err, body) {
-            console.log(err);
-            // TODO perhaps process body for information if error?
             callback(err, body)
         })
     }
@@ -208,7 +211,7 @@ Ripple_Account_Schema.methods.create_trust_object = function(options) {
                 "limit": options.limit.toString(),
                 "currency": options.currency,
                 "counterparty": options.counterparty,
-                "account_allows_rippling": false
+                "account_allows_rippling": true
             }
         };
     } else {

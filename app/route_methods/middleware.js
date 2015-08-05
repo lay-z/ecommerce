@@ -1,7 +1,8 @@
 /**
  * Created by priyav on 04/08/15.
  */
-var User = require('mongoose').model('User');
+var mongoose = require('mongoose');
+    User = mongoose.model('User');
 // Middle ware to make sure data is raw JSON
 module.exports.checkJSON = function(req, res, next) {
     if (req.get('Content-Type') !== 'application/json') {
@@ -29,11 +30,12 @@ module.exports.validate_user = function(req, res, next) {
 
     User.findOne({email: user_email}, function(err, user) {
         // Check if payer is a valid user of the system
-        if(user === null) return res.status(400).json({
+        if(err || user === null) return res.status(400).json({
             success: false,
             message: "Invalid email address; email address has not been registered"
         });
-        // Assign mongoose user model to request and call next function
+
+         //Assign mongoose user model to request and call next function
         req.user = user;
         next();
     })

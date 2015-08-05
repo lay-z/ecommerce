@@ -82,7 +82,7 @@ var User = mongoose.model('User', UserSchema);
 
 // Takes in mongoose error argument and returns error descriptor
 var create_error_object = function(err) {
-    //console.log(err);
+    console.log(err);
     var objKeys = Object.keys(err.errors);
     var fields = {};
     var member;
