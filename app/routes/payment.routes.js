@@ -10,4 +10,6 @@ module.exports.routes = function(app) {
                             payment_methods.pay_user);
     app.get("/v1/user/:email/validate", middleware.validate_user,
                             payment_methods.validate_account);
+    app.post("/v1/user/:email/deposit", middleware.validate_user, json_parser,
+                            payment_methods.deposit);
 };

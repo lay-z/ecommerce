@@ -17,7 +17,7 @@ function payment_options(payee, amount, no_currency) {
         payee: payee,
         currency: "XRP"
     }
-    if (no_currency === "undefined") {
+    if (typeof no_currency === "undefined") {
         options.currency = "KSH"
         options.issuer = BANK.address;
     }
@@ -38,9 +38,9 @@ module.exports.pay_user = function(req, res) {
             success: false,
             message: "Payee is not registered on system"
         });
-        var payment_options = (req.body.amount, user.ripple_account[0].address);
+        var options = payment_options(payee.ripple_account[0].address, req.body.amount);
 
-        user.ripple_account[0].send_payment(payment_options, function(err, response){
+        user.ripple_account[0].send_payment(options, function(err, response){
             if(err) {
                 return res.status(400).json(response);
             }
@@ -62,30 +62,65 @@ module.exports.validate_account = function(req, res) {
     var user_account = req.user.ripple_account[0];
     var bank = new Ripple_Account(BANK);
 
-    if(user_account.validated) {
+    if (user_account.validated) {
         return res.status(400).json({
             success: false,
             message: "User is already validated"
         })
-    };
+    }
+    ;
 
     // Send users wallet XRP
-    bank.send_payment(payment_options(user_account.address, 250, true), function(err, response){
-        if(err) return res.status(500).json(error_msg);
+    bank.send_payment(payment_options(user_account.address, 250, true), function (err, response) {
+        if (err) return res.status(500).json(error_msg);
 
         // Extend trust from user to bank
-        user_account.extend_trust(bank.address, function(err, response) {
-            if(err) return res.status(500).json(error_msg);
+        user_account.extend_trust(bank.address, function (err, response) {
+            if (err) return res.status(500).json(error_msg);
             res.json({
                 success: true,
                 message: "Users account has now been validated"
             })
             user_account.validated = true;
-            user.save(function(err) {
-                if(err) {
+            user.save(function (err) {
+                if (err) {
                     console.log(err);
                 }
             })
+        })
+    })
+};
+
+module.exports.deposit = function(req, res) {
+    var user = req.user;
+    var user_acc = user.ripple_account[0];
+    var amount = req.body.amount;
+    var bank = new Ripple_Account(BANK);
+    // Check amount exists
+    if(typeof req.body.amount === "undefined") {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid parameters: amount"
+        });
+    }
+    // if user is not validated
+    if(!user_acc.validated) {
+        return res.status(500).json({
+            success: false,
+            message: "User account has not yet been validated"
+        });
+    };
+    bank.send_payment(payment_options(user_acc.address, amount), function(err, resp) {
+        if(err) return res.status(500).json({
+            success: false,
+            message: "Could not deposit amount",
+            ripple: resp
+        });
+
+        res.json({
+            success: true,
+            message: "successfully deposited " + amount + " KSH",
+            ripple: resp
         })
     })
 };

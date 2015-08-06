@@ -7,27 +7,13 @@ var mongoose = require('mongoose'),
 module.exports.save_user = function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
-    var save = function (account, wallet) {
-        User.save_user_and_wallet(account, wallet, function (err) {
+    Ripple_Account.generate_wallet(function(err, wallet) {
+        User.save_user_and_wallet(req.body, wallet, function (err) {
             if (err) return res.status(400).json(err);
 
             res.json({success: true});
         });
-    };
-
-    if(req.body.ripple_account && req.body.secret) {
-        // Check if correct ripple_details have been sent/ exist (?)
-
-        var wallet = {
-            account: req.body.ripple_account,
-            secret: req.body.secret
-        };
-        save(req.body, wallet);
-    } else {
-        Ripple_Account.generate_wallet(function(err, wallet) {
-            save(req.body, wallet);
-        });
-    }
+    });
 };
 
 

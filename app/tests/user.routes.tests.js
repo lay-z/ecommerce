@@ -17,7 +17,7 @@ chai.use(require('chai-things'));
 
 describe('User routes', function() {
 
-    describe('Saving user and account', function() {
+    describe.only('Saving user and account', function() {
         // Used for validating saved users and accounts
         var user, user2;
 
@@ -109,10 +109,6 @@ describe('User routes', function() {
                     })
                 })
         });
-
-        //it("Should be able to validate ripple account and secret", function(done) {
-        //
-        //})
 
     });
 

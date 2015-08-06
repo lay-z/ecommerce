@@ -13,6 +13,10 @@ var chai = require('chai'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account');
 
+after(function(done) {
+    // Remove all users from database
+    User.remove().exec(done);
+});
 
 describe.skip("Ripple Payments", function(){
     this.timeout(12000);
@@ -67,11 +71,6 @@ describe.skip("Ripple Payments", function(){
             if (err) throw err;
             customer1Account.extend_trust(bank.address, done);
         });
-    });
-
-    after(function(done) {
-        User.remove().exec();
-        done();
     });
 
     it("Should return error object if payee account is not on system", function(done) {
@@ -228,7 +227,7 @@ describe.skip("Ripple Payments", function(){
 
 });
 
-describe.only("validating users ripple accounts", function() {
+describe("validating users ripple accounts", function() {
     // Create new wallet and user and save into database
     var user;
     before(function(done) {
@@ -246,12 +245,10 @@ describe.only("validating users ripple accounts", function() {
         })
     });
 
-    after(function(done) {
-        // Remove all users from database
-        User.remove().exec(done);
-    });
 
-    it("Should be able to user account that exists in database", function(done) {
+
+    it("Should be able to validate user account that exists in database", function(done) {
+        this.timeout(10000);
         request.get('/v1/user/' + user.email + '/validate')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200)
@@ -264,7 +261,57 @@ describe.only("validating users ripple accounts", function() {
                     if(err || (typeof user === "undefined")) throw new Error("User not saved")
 
                     user.ripple_account[0].validated.should.be.ok;
-                    done();
+                    user.ripple_account[0].get_balances(function(err, resp) {
+                        console.log(resp);
+                        done();
+                    })
+                })
+            })
+    });
+
+    it("Should return message that user is already validated if trying to revalidate")
+});
+
+describe("Depositing money into account", function() {
+    this.timeout(10000);
+    var user;
+    before(function(done) {
+        user = {
+            first_name: "test",
+            surname: "user",
+            email: "test@user.com",
+            password: "password",
+            paypal_account: "test@user.com",
+            tel_number: "07528149491"
+        };
+        Ripple_Account.generate_wallet(function(err, wallet) {
+            if (err) throw err;
+            User.save_user_and_wallet(user, wallet, function(err) {
+                request.get("/v1/user/" + user.email + '/validate')
+                    .end(done);
+            });
+        })
+    });
+
+    it("Should be able to deposit money into account that exists and is validated", function(done) {
+        var amount = 500;
+        request.post('/v1/user/' + user.email + '/deposit')
+            .send({amount: amount})
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(200)
+            .end(function(err, res){
+                should.not.exist(err);
+                // validate response
+                res.body.success.should.equal(true);
+                res.body.message.should.equal("successfully deposited " + amount + " KSH");
+                User.findOne({email: user.email}, function(err, user) {
+                    if(err || (typeof user === "undefined")) throw new Error("User not saved")
+
+                    user.ripple_account[0].get_balances(function(err, response) {
+                        if (err) throw err;
+                        console.log(response);
+                        done()
+                    });
                 })
             })
     })
