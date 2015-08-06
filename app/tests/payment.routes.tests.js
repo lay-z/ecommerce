@@ -14,7 +14,7 @@ var chai = require('chai'),
     Ripple_Account = mongoose.model('Ripple_Account');
 
 
-describe.only("Ripple Payments", function(){
+describe.skip("Ripple Payments", function(){
     this.timeout(12000);
 
     var bank = new Ripple_Account({
@@ -50,7 +50,7 @@ describe.only("Ripple Payments", function(){
     });
 
     before(function(done) {
-        this.timeout(20000)
+        this.timeout(20000);
         // Amounts to send new users
         function payment(add) {
             return {
@@ -62,12 +62,10 @@ describe.only("Ripple Payments", function(){
         // Save two users into system
         async.parallel([
             User.save_user_and_wallet.bind(User, customer1, customer1Account),
-            //User.save_user_and_wallet.bind(User, customer2, customer2Account),
-            bank.send_payment.bind(bank, payment(customer1Account)),
-            //bank.send_payment.bind(bank, payment
+            bank.send_payment.bind(bank, payment(customer1Account))
         ], function(err) {
             if (err) throw err;
-            customer1Account.extendTrust(bank.address, done);
+            customer1Account.extend_trust(bank.address, done);
         });
     });
 
@@ -169,21 +167,19 @@ describe.only("Ripple Payments", function(){
                 payee: user.ripple_account[0].address,
                 currency: "XRP",
                 amount: 250
-            };
-            console.log(options.payee);
+            }
             bank.send_payment(options, function(err, response) {
                 if(err) throw err;
-                user.ripple_account[0].extendTrust(bank.address, function(err, response) {
+                user.ripple_account[0].extend_trust(bank.address, function(err, response) {
                     if (err) throw err;
-                    console.log(response)
                     /* Begin actual test */
-                    request.post('/v1/user/' + customer1.email + '/transfer')
+                    request.post('/v1/user/' + customer2.email + '/transfer')
                         .send({
-                            payee: customer2.email,
+                            payee: customer1.email,
                             amount: "2000"
                         })
                         .expect('Content-Type', 'application/json; charset=utf-8')
-                        //.expect(400)
+                        .expect(400)
                         .end(function(err, res) {
                             should.not.exist(err);
                             // validate response
@@ -213,7 +209,6 @@ describe.only("Ripple Payments", function(){
             issuer: bank.address
         }, function(err, response) {
             if(err) throw err;
-            console.log(response);
             /*** begin test ***/
             request.post('/v1/user/' + customer1.email + '/transfer')
                 .send({
@@ -224,7 +219,6 @@ describe.only("Ripple Payments", function(){
                 .expect(200)
                 .end(function(err, res) {
                     should.not.exist(err);
-                    console.log(res.body);
                     // validate response
                     res.body.success.should.equal(true);
                     done();
@@ -232,4 +226,46 @@ describe.only("Ripple Payments", function(){
         })
     })
 
+});
+
+describe.only("validating users ripple accounts", function() {
+    // Create new wallet and user and save into database
+    var user;
+    before(function(done) {
+        user = {
+            first_name: "test",
+            surname: "user",
+            email: "test@user.com",
+            password: "password",
+            paypal_account: "test@user.com",
+            tel_number: "07528149491"
+        };
+        Ripple_Account.generate_wallet(function(err, wallet) {
+            if (err) throw err;
+            User.save_user_and_wallet(user, wallet, done);
+        })
+    });
+
+    after(function(done) {
+        // Remove all users from database
+        User.remove().exec(done);
+    });
+
+    it("Should be able to user account that exists in database", function(done) {
+        request.get('/v1/user/' + user.email + '/validate')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(200)
+            .end(function(err, res){
+                should.not.exist(err);
+                // validate response
+                res.body.success.should.equal(true);
+                res.body.message.should.equal("Users account has now been validated");
+                User.findOne({email: user.email}, function(err, user) {
+                    if(err || (typeof user === "undefined")) throw new Error("User not saved")
+
+                    user.ripple_account[0].validated.should.be.ok;
+                    done();
+                })
+            })
+    })
 });

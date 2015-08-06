@@ -37,7 +37,7 @@ module.exports.get_ripple_account_information = function(req, res) {
     var user = req.user;
 
    // Send request off for account balances
-   user.ripple_account[0].getBalances(function(err, balance) {
+   user.ripple_account[0].get_balances(function(err, balance) {
        if (err) return res.status(500).json(err);
 
        // After receiving information process and send back nicely to request
@@ -74,12 +74,6 @@ var process_rippleBalances = function(balance) {
     delete balance.validated;
 
     return true;
-};
-
-
-module.exports.transfer = function(req, res) {
-    // Search for user
-
 };
 //TODO validation check for ripple rest running
 

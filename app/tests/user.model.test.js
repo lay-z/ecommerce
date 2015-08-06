@@ -50,7 +50,7 @@ describe('User', function() {
                     should.not.exist(err);
 
                     var saved_wallet = document.ripple_account[0];
-                    saved_wallet.getBalances(function(err, balances){
+                    saved_wallet.get_balances(function(err, balances){
                         balances.success.should.be.ok;
                         done();
                     });

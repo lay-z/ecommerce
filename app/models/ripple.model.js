@@ -22,12 +22,16 @@ var Ripple_Account_Schema = new Schema({
     secret: {
         type: String,
         trim: true
+    },
+    validated: {
+        type: Boolean,
+        default:false
     }
-})
+});
 
 //Passes in  JSON obj with Ripple balance information of accountNo Into callback
 // callback(err, body)
-Ripple_Account_Schema.methods.getBalances = function (callback) {
+Ripple_Account_Schema.methods.get_balances = function (callback) {
     var self = this;
     var RESTmethod_getBalance = '/v1/accounts/' + self.address + '/balances'
     var urlBalances = rippleREST + RESTmethod_getBalance;
@@ -84,7 +88,7 @@ var submit = function(post_args, callback) {
         var error = null;
         if(!body.success) {
             error = new Error("Submission failed. check body for error details")
-            console.log(body);
+            //console.log(body);
         }
         callback(error, body)
     })
@@ -178,7 +182,7 @@ var validate_pay_options = function(options) {
 *  trustObj is what is submitted to rippleREST server. Construct it using
 *  create_trust_object
 */
-Ripple_Account_Schema.methods.extendTrust = function (ripple_address, callback) {
+Ripple_Account_Schema.methods.extend_trust = function (ripple_address, callback) {
     var self = this;
     var body, options;
     options = {
@@ -211,7 +215,7 @@ Ripple_Account_Schema.methods.create_trust_object = function(options) {
                 "limit": options.limit.toString(),
                 "currency": options.currency,
                 "counterparty": options.counterparty,
-                "account_allows_rippling": true
+                "account_allows_rippling": false
             }
         };
     } else {
@@ -228,13 +232,5 @@ Ripple_Account_Schema.statics.generate_wallet = function(callback) {
     });
 };
 
-/*
-* Works out if account is valid account
-* (by sending it a tiny incy wincy bit of money)
-* TODO
-*/
-Ripple_Account_Schema.statics.validate_account = function(callback) {
-
-};
 
 mongoose.model('Ripple_Account', Ripple_Account_Schema);

@@ -119,14 +119,11 @@ describe('User routes', function() {
     describe('Getting user account information', function() {
 
         // Master account information
-        var master_account = {
+        var master_account = new Ripple_Account({
             address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
             secret: "snoPBrXtMeMyMHUVTgbuqAfg1SUTb"
-        };
-        var ripple_account = {
-            address: "rnja8gckAmRZ7VA1VGKVsgthjJhcjaouTS",
-            secret: "sh1hMr2ZLTZj21JwCTAiVBrwFNHZ7"
-        };
+        });
+        var ripple_account;
 
         var user = {
             first_name: "test",
@@ -141,12 +138,14 @@ describe('User routes', function() {
         before(function(done){
             // Gives set up enough time to complete transactions
             this.timeout(5500);
+            Ripple_Account.generate_wallet(function(err, wallet) {
+                ripple_account = wallet;
 
-            User.save_user_and_wallet(user, ripple_account, function(){});
-            // Send XRP to account
-            new Ripple_Account(master_account).send_payment({currency: "XRP",
-                                        amount: 250, payee: ripple_account.address},
-                done);
+                User.save_user_and_wallet(user, ripple_account, function(){});
+                // Send XRP to account
+                master_account.send_payment({currency: "XRP", amount: 250,
+                    payee: ripple_account.address}, done);
+            })
         });
 
         after(function() {

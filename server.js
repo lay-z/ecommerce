@@ -3,14 +3,10 @@
  * Created by priyav on 14/07/15.
  */
 var express = require('express'),
-    path = require('path'),
     config = require('./config/config'),
     db = require('./app/initDB').init(),
-    body_parser = require('body-parser'),
-    url_parser = body_parser.urlencoded({"extended":false}),
-    //mongoose = require('mongoose'),
-    chalk = require('chalk'),
     routes = require('./app/routes/export.routes').routes,
+    path = require('path'),
     static_folder = (path.join(__dirname, 'global'));
 
 // Initialize application
@@ -22,12 +18,6 @@ var app = express(db);
 app.use(express.static(static_folder));
 //app.use(body_parser.urlencoded({ 'extended': false}))
 
-app.get('/v1/account/*/getBalance', function(req, res){
-    var account = req.url.split('/')[3];
-    Ripple_Account.getBalances(account, function(response){
-       res.end(response);
-    })
-});
 
 // Set up Routes for app
 routes(app);

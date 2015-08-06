@@ -104,7 +104,7 @@ describe("Ripple_Account Tests", function() {
 
         it("Should be able to create trust line between bank and ripple account with enough XRP", function(done) {
             this.timeout(10000)
-            customer.extendTrust(bank.address, function(err, body){
+            customer.extend_trust(bank.address, function(err, body){
                 should.not.exist(err);
                 body.success.should.be.ok;
                 body.should.have.deep.property("trustline.counterparty", bank.address);
@@ -251,7 +251,7 @@ describe("Ripple_Account Tests", function() {
         it("Should be able to send 100 KSH to an account that trusts the user", function(done) {
             this.timeout(12000);
             // send trust to receiver
-            receiver.extendTrust(master_account.address, function(err, body) {
+            receiver.extend_trust(master_account.address, function(err, body) {
                 if (err) throw err;
                 var options = {
                     payee: receiver.address,
