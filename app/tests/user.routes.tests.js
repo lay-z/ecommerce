@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 var chai = require('chai'),
     should = chai.should(),
     expect = chai.expect,
@@ -17,7 +15,7 @@ chai.use(require('chai-things'));
 
 describe('User routes', function() {
 
-    describe.only('Saving user and account', function() {
+    describe('Saving user and account', function() {
         // Used for validating saved users and accounts
         var user, user2;
 

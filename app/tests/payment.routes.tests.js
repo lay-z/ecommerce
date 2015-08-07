@@ -1,8 +1,7 @@
 /**
  * Created by priyav on 27/07/15.
  */
-// Get environment into testing mode!
-process.env.NODE_ENV = 'test';
+
 
 var chai = require('chai'),
     should = chai.should(),
@@ -261,15 +260,24 @@ describe("validating users ripple accounts", function() {
                     if(err || (typeof user === "undefined")) throw new Error("User not saved")
 
                     user.ripple_account[0].validated.should.be.ok;
-                    user.ripple_account[0].get_balances(function(err, resp) {
-                        console.log(resp);
-                        done();
-                    })
+                    // Make sure that ripple account exists in ripple network
+                    user.ripple_account[0].get_balances(done)
                 })
             })
-    });
+    })
 
-    it("Should return message that user is already validated if trying to revalidate")
+    it("Should return an error when trying to validate a user account that already exists", function(done) {
+        request.get('/v1/user/' + user.email + '/validate')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(400)
+            .end(function(err, res) {
+                should.not.exist(err);
+                // validate response
+                res.body.success.should.equal(false);
+                res.body.message.should.equal("User is already validated");
+                done();
+            });
+    })
 });
 
 describe("Depositing money into account", function() {
@@ -299,20 +307,20 @@ describe("Depositing money into account", function() {
             .send({amount: amount})
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200)
-            .end(function(err, res){
+            .end(function (err, res) {
                 should.not.exist(err);
                 // validate response
                 res.body.success.should.equal(true);
                 res.body.message.should.equal("successfully deposited " + amount + " KSH");
-                User.findOne({email: user.email}, function(err, user) {
-                    if(err || (typeof user === "undefined")) throw new Error("User not saved")
+                User.findOne({email: user.email}, function (err, user) {
+                    if (err || (typeof user === "undefined")) throw new Error("User not saved")
 
-                    user.ripple_account[0].get_balances(function(err, response) {
+                    user.ripple_account[0].get_balances(function (err, response) {
                         if (err) throw err;
                         console.log(response);
                         done()
                     });
                 })
             })
-    })
+    });
 });

@@ -4,12 +4,9 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account'),
-    assert = require('assert');
+    assert = require('assert'),
+    BANK = require('../../config/config').bank;
 
-var BANK = {
-    address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
-    secret: "snoPBrXtMeMyMHUVTgbuqAfg1SUTb"
-}
 
 function payment_options(payee, amount, no_currency) {
     var options = {
@@ -67,8 +64,7 @@ module.exports.validate_account = function(req, res) {
             success: false,
             message: "User is already validated"
         })
-    }
-    ;
+    };
 
     // Send users wallet XRP
     bank.send_payment(payment_options(user_account.address, 250, true), function (err, response) {

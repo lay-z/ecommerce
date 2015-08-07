@@ -2,9 +2,6 @@
  * Created by priyav on 25/07/15.
  */
 
-// Get environment into testing mode!
-process.env.NODE_ENV = 'test';
-
 var should = require('chai').should(),
     mongoose = require('mongoose'),
     Ripple_Account = mongoose.model('Ripple_Account'),

@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 console.log("Connecting to DB through model.user.test.js");
 require('../../app/initDB').init();
 var mongoose = require('mongoose'),
