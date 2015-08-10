@@ -4,13 +4,14 @@
  */
 
 var config = {
-    BANK: {
+    bank: {
         address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
         secret: "snoPBrXtMeMyMHUVTgbuqAfg1SUTb"
     },
     paypal: {
         id: "AWsD608kupzRQtt2BLPxyAgGY51iqac7MijsPXfgV8Ejh97pemztuq_CU3EmgeodKS7t5tiaaH2AQU14",
-        secret: "EPm94671GXrCADeKvKQlTO_RZaZUl4pibYnNxcXJUGZwR_Sw9ld6yle8Sjlh31eHJvwr9ptgRzEYv-mn"
+        //id-bus: "AKDx-cAThEThZ51X2qgHfs3B9c9yAYHYVEpQp6Me0cJis-vpARLL6dH1"
+        secret: "EPm94671GXrCADeKvKQlTO_RZaZUl4pibYnNxcXJUGZwR_Sw9ld6yle8Sjlh31eHJvwr9ptgRzEYv-mn",
     }
 };
 

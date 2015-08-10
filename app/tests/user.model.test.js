@@ -1,5 +1,4 @@
-console.log("Connecting to DB through model.user.test.js");
-require('../../app/initDB').init();
+
 var mongoose = require('mongoose'),
     should = require('chai').should(),
     User = mongoose.model('User');

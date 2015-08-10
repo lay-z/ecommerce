@@ -1,8 +1,6 @@
 /**
  * Created by priyav on 27/07/15.
  */
-
-
 var chai = require('chai'),
     should = chai.should(),
     server = require('../../server'),
@@ -17,7 +15,7 @@ after(function(done) {
     User.remove().exec(done);
 });
 
-describe.skip("Ripple Payments", function(){
+describe.only("Ripple Payments", function(){
     this.timeout(12000);
 
     var bank = new Ripple_Account({
@@ -126,7 +124,6 @@ describe.skip("Ripple Payments", function(){
                     .expect(400)
                     .end(function(err, res) {
                         should.not.exist(err);
-                        console.log(res.body);
                         // validate response
                         res.body.success.should.equal(false);
                         res.body.message.should.equal(
@@ -157,7 +154,7 @@ describe.skip("Ripple Payments", function(){
     })
 
     it("Should return correct information if payer doesn't have enough money to send", function(done) {
-       this.timeout(34000);
+       this.timeout(36000);
         /* Setup accounts */
         User.findOne({email: customer2.email}, function(err, user) {
 
@@ -181,7 +178,7 @@ describe.skip("Ripple Payments", function(){
                         .end(function(err, res) {
                             should.not.exist(err);
                             // validate response
-                            console.log(res.body)
+
                             res.body.success.should.equal(false);
                             res.body.message.should.equal(
                                 "Path could not send partial amount. " +
@@ -206,7 +203,10 @@ describe.skip("Ripple Payments", function(){
             amount: 2500,
             issuer: bank.address
         }, function(err, response) {
-            if(err) throw err;
+            if(err) {
+                console.log(err);
+                console.log(response);
+            }
             /*** begin test ***/
             request.post('/v1/user/' + customer1.email + '/transfer')
                 .send({

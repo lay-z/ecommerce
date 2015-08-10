@@ -4,9 +4,9 @@
 
 var config = require('../config/config.js'),
     chalk = require('chalk'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    models = require('../app/models/models');
 
-// set environment to test
 module.exports.init = function() {
 
     // Check if already connected to db
@@ -22,7 +22,7 @@ module.exports.init = function() {
     });
 
     // Intialize database and models
-    require('../app/models/models').initialize();
+    models.initialize();
 
     return db;
-}
+};

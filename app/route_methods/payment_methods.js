@@ -31,7 +31,7 @@ module.exports.pay_user = function(req, res) {
     var user = req.user;
 
     User.findOne({email: req.body.payee}, function(err, payee) {
-        if (err || (payee == null)) return res.status(400).json({
+        if (err || (payee === null)) return res.status(400).json({
             success: false,
             message: "Payee is not registered on system"
         });

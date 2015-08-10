@@ -76,8 +76,6 @@ var submit = function(post_args, callback) {
 // post_args - contains url and body to be posted to server
 // callback(err, response.body)
 
-    var url = post_args.url;
-
     request.post({
         url: rippleREST + post_args.url,
         json: true,
