@@ -1,5 +1,5 @@
-var user_methods = require('../../app/route_methods/user_methods'),
-    middleware = require('../../app/route_methods/middleware'),
+var user_methods = require('../../app/controllers/user_methods'),
+    middleware = require('../../app/controllers/middleware'),
     json_parser = require('body-parser').json();
 
 module.exports.routes = function(app) {

@@ -10,6 +10,7 @@
     "chai": "^3.2.0",
     "chai-things": "^0.2.0",
     "chalk": "^1.1.0",
+    "crypto": "0.0.3",
     "express": "^4.13.1",
     "express-generator": "^4.13.1",
     "generator-angular-fullstack": "^2.0.13",

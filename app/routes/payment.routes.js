@@ -1,8 +1,8 @@
 /**
  * Created by priyav on 04/08/15.
  */
-var payment_methods = require('../../app/route_methods/payment_methods'),
-    middleware = require('../../app/route_methods/middleware'),
+var payment_methods = require('../../app/controllers/payment_methods'),
+    middleware = require('../../app/controllers/middleware'),
     json_parser = require('body-parser').json();
 
 module.exports.routes = function(app) {

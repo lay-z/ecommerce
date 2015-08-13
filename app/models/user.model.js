@@ -6,11 +6,12 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Ripple_Account = mongoose.model('Ripple_Account'),
-    Ripple_Account_Schema = Ripple_Account.schema;
+    Ripple_Account_Schema = Ripple_Account.schema,
+    crypto = require('crypto');
 
 // Password must be greater than 6 chars
 var validatePassword = function(password) {
-    return password.length > 6;
+    return password.length > 5;
 };
 
 
@@ -32,10 +33,13 @@ var UserSchema = new Schema({
         unique: true,
         match: [/.+\@.+\..+/, 'Please fill a valid email address']
     },
-    password: {
+    pin: {
         type: String,
         default: '',
-        validate: [validatePassword, 'Password should be longer']
+        validate: [validatePassword, 'Pin should be longer']
+    },
+    salt: {
+        type: String
     },
     ripple_account: [Ripple_Account_Schema],
     paypal_account: {
@@ -49,8 +53,32 @@ var UserSchema = new Schema({
     }
 });
 
-UserSchema.methods.authenticate = function (password) {
-    return password == this.password;
+UserSchema.pre('save', function(next) {
+    // If the user
+    if (this.pin && this.pin.length > 5) {
+        this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+        this.pin = this.hashPin(this.pin);
+    }
+
+    next();
+});
+
+/**
+ * Create instance method for hashing a password
+ */
+UserSchema.methods.hashPin = function(pin) {
+    if (this.salt && pin) {
+        return crypto.pbkdf2Sync(pin, this.salt, 10000, 64).toString('base64');
+    } else {
+        return pin;
+    }
+};
+
+/**
+ * Create instance method for authenticating user
+ */
+UserSchema.methods.authenticate = function(pin) {
+    return this.pin === this.hashPin(pin);
 };
 
 UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {

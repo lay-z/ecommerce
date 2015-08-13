@@ -10,12 +10,13 @@ var chai = require('chai'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account');
 
+// Root level hook will always run after all describe sets
 after(function(done) {
     // Remove all users from database
     User.remove().exec(done);
 });
 
-describe.only("Ripple Payments", function(){
+describe.skip("Ripple Payments", function(){
     this.timeout(12000);
 
     var bank = new Ripple_Account({

@@ -2,7 +2,7 @@
 var chai = require('chai'),
     should = chai.should(),
     expect = chai.expect,
-    user_methods = require('../../app/route_methods/user_methods'),
+    user_methods = require('../../app/controllers/user_methods'),
     server = require('../../server'),
     request = require('supertest')(server),
     mongoose = require('mongoose'),

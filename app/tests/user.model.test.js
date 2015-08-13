@@ -4,16 +4,16 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 // Global User for use in functions
-var user, user2, wallet;
+var user1, user2, wallet;
 
 // Begin tests
 describe('User', function() {
     beforeEach(function() {
-        user = {
+        user1 = {
             first_name: "priyav",
             surname: "user",
             email: "test@user.com",
-            password: "password",
+            pin: "036989",
             paypal_account: "test@user.com",
             tel_number: "07528149491"
         };
@@ -22,7 +22,7 @@ describe('User', function() {
             first_name: "another",
             surname: "user2",
             email: "test@user.com",
-            password: "password2",
+            pin: "776589",
             paypal_account: "anothertest@user.com",
             tel_number: "07559198901"
         };
@@ -34,20 +34,21 @@ describe('User', function() {
 
     });
 
-    afterEach(function(done){
-        User.remove().exec();
-        done();
+    after(function(done){
+        User.remove().exec(done);
     });
 
-    describe('#save', function() {
+    describe.only('#save', function() {
+
         it('should save User and ripple account into empty database', function (done) {
-            User.save_user_and_wallet(user, wallet, function(err){
+            User.save_user_and_wallet(user1, wallet, function(err){
                 should.not.exist(err);
-                User.findOne({email: user.email}, function(err, document) {
+                User.findOne({email: user1.email}, function(err, document) {
                     should.not.exist(err);
 
                     var saved_wallet = document.ripple_account[0];
                     saved_wallet.get_balances(function(err, balances){
+                        should.not.exist(err);
                         balances.success.should.be.ok;
                         done();
                     });
@@ -56,8 +57,8 @@ describe('User', function() {
         });
 
         it("Shouldn't be able to save with invalid email address", function(done){
-            user.email = "invalidEmailAddress.com";
-            User.save_user_and_wallet(user, null, function(err) {
+            user1.email = "invalidEmailAddress.com";
+            User.save_user_and_wallet(user1, null, function(err) {
                 err.should.exist;
                 err.should.have.deep.property("success", false);
                 done()
@@ -65,15 +66,29 @@ describe('User', function() {
         });
 
         it("Should not be able to save two users with same email address", function(done){
-           User.save_user_and_wallet(user, null, function(err){
-               if (err) done(err);
-
                User.save_user_and_wallet(user2, null, function(err) {
                    err.should.exist;
                    err.should.have.deep.property("success", false);
                    done()
-               });
            })
+
+        });
+
+        it("Should have produced a hash of saved pin", function(done) {
+            User.findOne({email: user1.email}, function(err, document) {
+                should.not.exist(err);
+                should.not.equal(user1.pin, document.pin);
+                done();
+            });
+        });
+
+        it("Should be able to authenticate user based on non hashed pin", function(done) {
+            User.findOne({email: user1.email}, function(err, user) {
+                should.not.exist(err);
+                user.authenticate(user1.pin).should.be.true;
+                done();
+            });
+
         })
-    });
+    })
 });

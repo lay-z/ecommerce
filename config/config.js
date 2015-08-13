@@ -10,8 +10,13 @@ var config = {
     },
     paypal: {
         id: "AWsD608kupzRQtt2BLPxyAgGY51iqac7MijsPXfgV8Ejh97pemztuq_CU3EmgeodKS7t5tiaaH2AQU14",
-        //id-bus: "AKDx-cAThEThZ51X2qgHfs3B9c9yAYHYVEpQp6Me0cJis-vpARLL6dH1"
-        secret: "EPm94671GXrCADeKvKQlTO_RZaZUl4pibYnNxcXJUGZwR_Sw9ld6yle8Sjlh31eHJvwr9ptgRzEYv-mn",
+        secret: "EPm94671GXrCADeKvKQlTO_RZaZUl4pibYnNxcXJUGZwR_Sw9ld6yle8Sjlh31eHJvwr9ptgRzEYv-mn"
+    },
+    paypal_classic: {
+        USER_ID: "priyavrocks-facilitator_api1.gmail.com",
+        USER_PASSWORD: "N79WP6SL5VN3Y3VV",
+        SECURITY_SIGNATURE: "AFI6817FgiwVFRY4bJ-G2xqixwsTAPI2wjbjLbhkJZXvTRGQEZsEHtfu",
+        APP_ID: "APP-80W284485P519543T"
     }
 };
 
