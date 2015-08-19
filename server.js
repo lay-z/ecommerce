@@ -7,7 +7,11 @@ var express = require('express'),
     db = require('./app/initDB').init(),
     routes = require('./app/routes/export.routes').routes,
     path = require('path'),
+    passport = require('passport'),
     static_folder = (path.join(__dirname, 'global'));
+
+// Initialise passport middleware
+//require("./app/passport")();
 
 // Initialize application
 var app = express(db);
@@ -16,7 +20,7 @@ var app = express(db);
 // Within static_folder
 // Can place multiple statics
 app.use(express.static(static_folder));
-//app.use(body_parser.urlencoded({ 'extended': false}))
+//app.use(passport)
 
 
 // Set up Routes for app

@@ -14,7 +14,6 @@ var validatePassword = function(password) {
     return password.length > 5;
 };
 
-
 var UserSchema = new Schema({
     first_name: {
         type: String,
@@ -26,12 +25,12 @@ var UserSchema = new Schema({
         trim: true,
         required: "surname is required"
     },
-    email: {
+    phone_number: {
         type: String,
         trim: true,
         required: "email address is required",
         unique: true,
-        match: [/.+\@.+\..+/, 'Please fill a valid email address']
+        match: [/^\d+$/, 'Please fill valid number']
     },
     pin: {
         type: String,
@@ -42,15 +41,6 @@ var UserSchema = new Schema({
         type: String
     },
     ripple_account: [Ripple_Account_Schema],
-    paypal_account: {
-        type:String,
-        default:'',
-        match: [/.+\@.+\..+/, 'Please fill a valid paypal email address']
-    },
-    tel_number: {
-        type: String,
-        required: "tel_number is required"
-    }
 });
 
 UserSchema.pre('save', function(next) {
@@ -88,7 +78,7 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
     user.ripple_account.push(wallet);
 
     // Check if User email address already exists before continue
-    check_if_email_exists(user.email, function(err){
+    check_if_number_exists(user.phone_number, function(err){
         if (err) return callback(err);
 
         user.save(function (err) {
@@ -130,23 +120,23 @@ var create_error_object = function(err) {
     }
 };
 
-// Checks if document exists with email address, if it does
+// Checks if document exists with phone_number in the system, if it does
 // Pass in an error into callback else
-var check_if_email_exists = function (email, callback) {
-    User.findOne({email: email}, function(err, data){
+var check_if_number_exists = function (number, callback) {
+    User.findOne({phone_number: number}, function(err, data){
         if(err) return callback(err);
-        // If data there exists email
+        // If data there exists number
         if(data) {
             return callback({
                 success: false,
                 error: {
-                    message: "email address already in system",
+                    message: "number already in system",
                     fields: {
-                        email: data.email
+                        number: data.phone_number
                     }
                 }
             });
-        } else { // If no data found then no email address
+        } else { // If no data found then no number
             callback(null);
         }
     });

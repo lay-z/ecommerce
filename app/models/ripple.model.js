@@ -86,7 +86,6 @@ var submit = function(post_args, callback) {
         var error = null;
         if(!body.success) {
             error = new Error("Submission failed. check body for error details")
-            //console.log(body);
         }
         callback(error, body)
     })

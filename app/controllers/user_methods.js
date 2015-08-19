@@ -21,7 +21,7 @@ module.exports.save_user = function(req, res) {
 module.exports.get_ripple_account_information = function(req, res) {
     // Parse out email address from request URL
     var user = req.user;
-
+    console.log(user);
    // Send request off for account balances
    user.ripple_account[0].get_balances(function(err, balance) {
        if (err) return res.status(500).json(err);

@@ -7,24 +7,20 @@ var mongoose = require('mongoose'),
 var user1, user2, wallet;
 
 // Begin tests
-describe('User', function() {
+describe('User model', function() {
     beforeEach(function() {
         user1 = {
             first_name: "priyav",
             surname: "user",
-            email: "test@user.com",
-            pin: "036989",
-            paypal_account: "test@user.com",
-            tel_number: "07528149491"
+            phone_number: "07528149491",
+            pin: "036989"
         };
 
         user2 = {
             first_name: "another",
             surname: "user2",
-            email: "test@user.com",
-            pin: "776589",
-            paypal_account: "anothertest@user.com",
-            tel_number: "07559198901"
+            phone_number: "07528149491",
+            pin: "776589"
         };
 
         wallet = {
@@ -38,12 +34,12 @@ describe('User', function() {
         User.remove().exec(done);
     });
 
-    describe.only('#save', function() {
+    describe('#save', function() {
 
         it('should save User and ripple account into empty database', function (done) {
             User.save_user_and_wallet(user1, wallet, function(err){
                 should.not.exist(err);
-                User.findOne({email: user1.email}, function(err, document) {
+                User.findOne({phone_number: user1.phone_number}, function(err, document) {
                     should.not.exist(err);
 
                     var saved_wallet = document.ripple_account[0];
@@ -56,8 +52,8 @@ describe('User', function() {
             });
         });
 
-        it("Shouldn't be able to save with invalid email address", function(done){
-            user1.email = "invalidEmailAddress.com";
+        it("Shouldn't be able to save with invalid phone_number", function(done){
+            user1.phone_number = "invalidnumber";
             User.save_user_and_wallet(user1, null, function(err) {
                 err.should.exist;
                 err.should.have.deep.property("success", false);
@@ -65,17 +61,16 @@ describe('User', function() {
             });
         });
 
-        it("Should not be able to save two users with same email address", function(done){
-               User.save_user_and_wallet(user2, null, function(err) {
-                   err.should.exist;
-                   err.should.have.deep.property("success", false);
-                   done()
+        it("Should not be able to save two users with same phone_number", function(done){
+           User.save_user_and_wallet(user2, null, function(err) {
+               err.should.exist;
+               err.should.have.deep.property("success", false);
+               done()
            })
-
         });
 
         it("Should have produced a hash of saved pin", function(done) {
-            User.findOne({email: user1.email}, function(err, document) {
+            User.findOne({phone_number: user1.phone_number}, function(err, document) {
                 should.not.exist(err);
                 should.not.equal(user1.pin, document.pin);
                 done();
@@ -83,12 +78,11 @@ describe('User', function() {
         });
 
         it("Should be able to authenticate user based on non hashed pin", function(done) {
-            User.findOne({email: user1.email}, function(err, user) {
+            User.findOne({phone_number: user1.phone_number}, function(err, user) {
                 should.not.exist(err);
                 user.authenticate(user1.pin).should.be.true;
                 done();
             });
-
         })
     })
 });

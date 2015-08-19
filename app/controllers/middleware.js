@@ -18,25 +18,26 @@ module.exports.checkJSON = function(req, res, next) {
 
 // Middleware to validate user
 module.exports.validate_user = function(req, res, next) {
-    var user_email = req.params.email;
+    var phone_number = req.params.email;
 
     //check that email exists
-    if(typeof (user_email = req.params.email) == 'undefined') {
+    if(typeof phone_number === 'undefined') {
         return res.status(400).json({
             message:"No email address was provided",
             success: false
         })
     };
 
-    User.findOne({email: user_email}, function(err, user) {
+    User.findOne({phone_number: phone_number}, function(err, user) {
         // Check if payer is a valid user of the system
-        if(err || user === null) return res.status(400).json({
+        if (err) return res.status(400).json(err);
+        if (!user) res.status(400).json({
             success: false,
-            message: "Invalid email address; email address has not been registered"
+            message: "Invalid phone_number; phone_number has not been registered"
         });
 
-         //Assign mongoose user model to request and call next function
+        // User exists and has been validated, adding to the requests
         req.user = user;
         next();
-    })
+    });
 };

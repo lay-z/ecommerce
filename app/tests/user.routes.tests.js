@@ -16,36 +16,35 @@ chai.use(require('chai-things'));
 
 describe('User routes', function() {
 
+    // Global objects for use across tests
+    var user, user2;
+
+    before(function(){
+        user = {
+            first_name: "test",
+            surname: "user",
+            pin: "889966",
+            phone_number: "07528149491"
+        };
+
+        user2 = {
+            first_name: "test2",
+            surname: "user2",
+            pin: "887766",
+            phone_number: "77985639478"
+        };
+    });
+
+
+
     describe('Saving user and account', function() {
         // Used for validating saved users and accounts
-        var user, user2;
-
-        beforeEach(function(){
-            user = {
-                first_name: "test",
-                surname: "user",
-                email: "test@user.com",
-                password: "password",
-                paypal_account: "test@user.com",
-                tel_number: "07528149491"
-            };
-
-            user2 = {
-                first_name: "test2",
-                surname: "user2",
-                email: "test@user.com",
-                password: "password22",
-                paypal_account: "another@user.com",
-                tel_number: "0778900700"
-            };
-        });
 
         after(function(done) {
             console.log("removing all users and accounts from test db");
             User.remove().exec();
-            Ripple_Account.remove().exec();
             done();
-        })
+        });
 
        it("should return bad request 400 if body is not JSON formatted", function(done) {
            //console.log(request);
@@ -64,11 +63,10 @@ describe('User routes', function() {
                 .expect(400)
                 .end(function(err, res){
                     res.body.should.have.deep.property("success", false)
-                    res.body.should.have.deep.property("error.fields.tel_number");
-                    res.body.should.have.deep.property("error.fields.email");
+                    res.body.should.have.deep.property("error.fields.phone_number");
                     res.body.should.have.deep.property("error.fields.surname");
                     res.body.should.have.deep.property("error.fields.first_name");
-                    res.body.should.have.deep.property("error.fields.password");
+                    res.body.should.have.deep.property("error.fields.pin");
                     done();
                 });
         });
@@ -79,13 +77,17 @@ describe('User routes', function() {
                 .expect(200)
                 .end(function(err, res) {
                     res.body.should.have.deep.property("success", true);
-                    User.findOne({email: user.email}, done);
+                    User.findOne({phone_number: user.phone_number}, done);
                 });
         });
 
-        it("Should return error when user tries to create account with email already in use", function(done){
+        it("Should return error when user tries to create account with phone_number already in use", function(done){
+            var newUser = JSON.parse(JSON.stringify(user2));
+
+            newUser.phone_number = user.phone_number;
+            console.log(newUser);
             request.post('/v1/user/createUser')
-                .send(user2)
+                .send(newUser)
                 .expect(400)
                 .end(function(err, res){
                     if(err) throw err;
@@ -95,7 +97,6 @@ describe('User routes', function() {
         });
 
         it("Should generate and save ripple account when creating account if none is provided", function(done) {
-            user2.email = "user2@mail.com"; // Create unique email address
             request.post('/v1/user/createUser')
                 .send(user2)
                 .end(function(err, res) {
@@ -113,6 +114,12 @@ describe('User routes', function() {
 
     describe('Getting user account information', function() {
 
+        after(function(done) {
+            console.log("removing all users and accounts from test db");
+            User.remove().exec();
+            done();
+        });
+
         // Master account information
         var master_account = new Ripple_Account({
             address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
@@ -120,39 +127,31 @@ describe('User routes', function() {
         });
         var ripple_account;
 
-        var user = {
-            first_name: "test",
-            surname: "user",
-            email: "test@user.com",
-            password: "password",
-            paypal_account: "test@user.com",
-            tel_number: "07528149491"
-        };
 
         // Set up User and wallet in db
         before(function(done){
+            console.log("In the before setup");
             // Gives set up enough time to complete transactions
             this.timeout(5500);
             Ripple_Account.generate_wallet(function(err, wallet) {
                 ripple_account = wallet;
 
                 User.save_user_and_wallet(user, ripple_account, function(){});
+                if(err) throw err;
                 // Send XRP to account
                 master_account.send_payment({currency: "XRP", amount: 250,
-                    payee: ripple_account.address}, done);
+                    payee: ripple_account.address}, function(err, body) {
+                    done();
+                });
             })
         });
 
-        after(function() {
-            User.remove().exec();
-            Ripple_Account.remove().exec();
-        });
 
 
        it("Should send empty array of balances if user exists but has not deposited any money", function(done){
 
             // Make get request to /v1/user/:email
-            request.get('/v1/user/' + user.email)
+            request.get('/v1/user/' + user.phone_number)
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .end(function(err, res) {
@@ -184,7 +183,7 @@ describe('User routes', function() {
                 message: "User Account has not yet been validated"
             };
             // Create new user with generated ripple address
-            user.email = "newemail@gmail.com";
+            user.phone_number = "0776995336";
             // Generate and then save wallet and user (but not validated wallet)
             Ripple_Account.generate_wallet(function(err, wallet) {
                 if (err) throw err;
@@ -192,7 +191,7 @@ describe('User routes', function() {
                 User.save_user_and_wallet(user, wallet, function(err) {
                     if (err) throw err;
 
-                    request.get('/v1/user/' + user.email)
+                    request.get('/v1/user/' + user.phone_number)
                         .expect('Content-Type', 'application/json; charset=utf-8')
                         .expect(500)
                         .end(function(err, res) {
@@ -207,11 +206,11 @@ describe('User routes', function() {
         it("Should return error object if request called for user that doesn't exist", function(done){
             var accountNotValidError = {
                 success: false,
-                message: "Invalid email address; email address has not been registered"
+                message: "Invalid phone_number; phone_number has not been registered"
             };
 
             // Send get request for user that doesn't exist
-            request.get('/v1/user/notUser@nonexistantmail.com')
+            request.get('/v1/user/0446958636')
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(400)
                 .end(function(err, res) {
