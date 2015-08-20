@@ -66,13 +66,26 @@ module.exports.submit_request = function(req, res) {
 };
 
 module.exports.get_payment_requests = function(req, res) {
-    var no_requests = {success:false, message: "No requests have been made yet"};
-
     // Returns array of all request objects that have been made by retailer
-    var retailer = req.user;
 
-    Payment_Request.find( { retailer: retailer._id }, "-__v -retailer", function(err, requests) {
-        if(err || (requests.length === 0)) return res.status(400).json(no_requests);
+    var no_requests = {success:false, message: "No requests have been made yet"};
+    var retailer = req.user;
+    var query_opts = { retailer: retailer._id };
+
+    // If query has been appended to url
+    if(req.query) {
+        // Return only paid requests
+        if(req.query.paid === 'true') {
+            query_opts.proof_of_payment = {$ne: null}
+        }
+        // Return only unpaid requests
+        if(req.query.paid === 'false') {
+            query_opts.proof_of_payment =  null;
+        }
+    }
+
+    Payment_Request.find( query_opts, "-__v -retailer", function(err, requests) {
+        if(err) return res.status(400).json(no_requests);
 
         res.json({
             success: true,
