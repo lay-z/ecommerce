@@ -3,7 +3,6 @@
  */
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    Ripple_Account_Schema = Ripple_Account.schema,
     crypto = require('crypto');
 
 var Retailer_Schema = new Schema({
@@ -12,23 +11,21 @@ var Retailer_Schema = new Schema({
         trim: true,
         required: "business_name is required"
     },
-    salt: {
-        type: String
-    },
     ripple_address: {
         type: String,
         required: "no ripple address provided"
     },
     secret: {
-        type: Sring
+        type: String
     }
 });
 
 
 Retailer_Schema.pre('save', function(next) {
     // Generate secret on saving retailer to disk
-    this.secret = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+    this.secret = new Buffer(crypto.randomBytes(16).toString('base64'));
     next();
 });
 
+// Save the schema as a model
 var Retailer = mongoose.model('Retailer', Retailer_Schema);

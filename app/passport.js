@@ -2,35 +2,21 @@
  * Created by priyav on 13/08/15.
  */
 var passport = require('passport'),
-    Local_Strategy = require('passport-local').Strategy,
+    Strategy = require('passport-http').DigestStrategy,
     mongoose = require('mongoose'),
-    User = mongoose.model('User');
+    Retailer = mongoose.model('Retailer');
 
-module.exports = function() {
-    passport.use(new Local_Strategy({
-        // inform password strategy that username and password are in different fields
-        usernameField: 'email',
-        passwordField: 'pin',
-        },
-        // local strategy requires credential parameters to exist in username and password
-        function(username, password, done) {
-            User.findOne({email: username}, function(err, user) {
-                // Check if payer is a valid user of the system
-                if(err) return done(err);
-                if(!user) return done(null, false, {
-                    success: false,
-                    message: "Invalid email address; email address has not been registered"
-                });
+module.exports.initialize = function() {
+    passport.use(new Strategy({qop: 'oauth'}, function(username, callback){
+        Retailer.findOne({_id: username}, function(err, retailer) {
+            // If retailer doesn't have id then return no matching _id
+            if (err) return callback(err);
+            if(!retailer) return callback(null, false);
+            return callback(null, retailer, retailer.secret)
+        })
+    }));
+}
 
-                if(!user.authenticate(password)) {
-                    return done(null, false, {
-                        success: false,
-                        message: "Invalid pin"
-                    })
-                }
-
-                return done(null, user)
-            })
-        }
-    ))
+module.exports.digest_authentication = function() {
+    return passport.authenticate('digest',{session: false });
 }

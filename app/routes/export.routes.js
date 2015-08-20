@@ -3,7 +3,7 @@
  */
     // Initialises all routes for app
 var fs = require('fs'),
-    routes = ['payment.routes', 'user.routes'];
+    routes = ['payment.routes', 'user.routes', 'retailer.routes'];
 
 module.exports.routes = function(app) {
     for(var i =0; i < routes.length; i++) {

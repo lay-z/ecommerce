@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     Ripple_Account = mongoose.model('Ripple_Account'),
     Ripple_Account_Schema = Ripple_Account.schema,
+    mongoose_error_handler = require('./mongoose_error_handling').error_descriptor,
     crypto = require('crypto');
 
 // Password must be greater than 6 chars
@@ -83,7 +84,7 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
 
         user.save(function (err) {
             if (err) {
-                var e = create_error_object(err);
+                var e = mongoose_error_handler(err);
                 return callback(e);
             }
             callback();
@@ -97,28 +98,6 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
 // Can re-access this model when connecting to database later: use
 // mongoose.model('User')
 var User = mongoose.model('User', UserSchema);
-
-// Takes in mongoose error argument and returns error descriptor
-var create_error_object = function(err) {
-    console.log(err);
-    var objKeys = Object.keys(err.errors);
-    var fields = {};
-    var member;
-
-    // Construct object with fields and information on field
-    for(var i = 0; i < objKeys.length;  i++) {
-        member = objKeys[i];
-        fields[member] = err.errors[member].message;
-    }
-
-    return {
-        success: false,
-        error: {
-            message: err.message,
-            fields: fields
-        }
-    }
-};
 
 // Checks if document exists with phone_number in the system, if it does
 // Pass in an error into callback else

@@ -22,6 +22,8 @@ var app = express(db);
 app.use(express.static(static_folder));
 //app.use(passport)
 
+// Set up authentication strategies
+require('./app/passport').initialize();
 
 // Set up Routes for app
 routes(app);
