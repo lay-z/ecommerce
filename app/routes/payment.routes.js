@@ -12,4 +12,6 @@ module.exports.routes = function(app) {
                             payment_methods.validate_account);
     app.post("/v1/user/:email/deposit", middleware.validate_user, json_parser,
                             payment_methods.deposit);
+    app.post("/v1/user/:email/payment_request/:request", middleware.validate_user,
+                            json_parser, payment_methods.payout_request)
 };

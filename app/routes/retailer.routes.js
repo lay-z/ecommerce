@@ -9,8 +9,11 @@ var retailer_controller = require('../../app/controllers/retailer.controller'),
 
 
 module.exports.routes = function(app) {
-    app.post('/v1/retailer', json_parser, retailer_controller.save_retailer)
+    app.post('/v1/retailer', json_parser, retailer_controller.save_retailer);
     app.get('/v1/retailer', digest_authentication, function(req, res) {
         res.json(req.user);
-    })
+    });
+    app.post('/v1/retailer/payment_request', digest_authentication, json_parser, retailer_controller.submit_request);
+    app.get('/v1/retailer/payment_request/:id', digest_authentication, json_parser, retailer_controller.get_payment_request);
+    app.get('/v1/retailer/payment_request', digest_authentication, json_parser, retailer_controller.get_payment_requests);
 };

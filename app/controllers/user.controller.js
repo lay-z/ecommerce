@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account'),
+    Payment_Request = mongoose.model('Payment_Request'),
     assert = require('assert');
 
 
@@ -61,7 +62,21 @@ var process_rippleBalances = function(balance) {
 
     return true;
 };
-//TODO validation check for ripple rest running
 
+module.exports.get_payment_requests = function(req, res) {
+    var no_requests = {success:false, message: "No requests have been made yet"};
+
+    // Returns array of all request objects that have been made by retailer
+    var user = req.user;
+
+    Payment_Request.find( {customer_number: user.phone_number }, "-__v -retailer", function(err, requests) {
+        if(err || (requests.length === 0)) return res.status(400).json(no_requests);
+
+        res.json({
+            success: true,
+            requests: requests
+        })
+    })
+};
 
 

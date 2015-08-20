@@ -4,6 +4,8 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account'),
+    Payment_Request = mongoose.model('Payment_Request'),
+    Retailer = mongoose.model('Retailer'),
     assert = require('assert'),
     BANK = require('../../config/config').bank;
 
@@ -120,3 +122,67 @@ module.exports.deposit = function(req, res) {
         })
     })
 };
+
+//TODO add webhook support for retailer?
+module.exports.payout_request = function (req, res) {
+    var user = req.user;
+    // Find the request
+    Payment_Request.findOne({_id: req.params.request}, function(err, request){
+        if(err | !request) return res.status(400).json({success:false, message:"Invalid payment_request"})
+        console.log(request)
+
+        // If user wishes to decline save the request as declined and quit
+        if(req.body.decline) {
+            request.proof_of_payment = "DECLINED";
+            request.save(function(err) {
+                if(err) console.log("Couldn't save request");
+            });
+            return res.json({
+                success: true,
+                message: "Payment has been cancelled"
+            })
+        }
+
+        // Check if it has been paid, or cancelled
+        if(request.proof_of_payment) {
+            return res.json({
+                success: false,
+                message: "Payment request has already been paid or has been cancelled"
+            })
+        }
+
+        // Find the ripple account of the business asking for request
+        Retailer.findOne({_id: request.retailer}, function(err, retailer) {
+            if(err | !retailer) res.status(500).json({success: false, message: "Could not find retailer"})
+            console.log(retailer);
+
+            // send payment to ripple account
+            options = {
+                payee: retailer.ripple_address,
+                currency: request.amount.currency,
+                issuer: BANK.address,
+                amount: request.amount.value
+            };
+            user.ripple_account[0].send_payment(options, function(err, body) {
+                if(err | !body.success) return res.status(400).json({
+                    success: false,
+                    message: "Ripple payment failed",
+                    details: body
+                })
+                console.log(body);
+                // If payment validated then update request to have UUID placed onto payment
+                request.proof_of_payment = body.hash;
+                request.save(function(err) {
+                    if (err) console.log("Error saving request:\n%s", request)
+                });
+
+                // Return confirmatory message if succesfull
+                res.json({
+                    success: true,
+                    message: "Succesfully completed payment",
+                    request: request
+                })
+            })
+        })
+    })
+}

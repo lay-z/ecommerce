@@ -36,7 +36,7 @@ var supported_values = function(value) {
 };
 
 var Payment_Request_Schema = {
-    payer: {
+    customer_number: {
         type: String,
         required: "Payer phone_number required"
     },
@@ -56,7 +56,11 @@ var Payment_Request_Schema = {
         required: "No description provided"
     },
     retailer: {
-        type: ObjectId
+        type: Schema.Types.ObjectId
+    },
+    business_name: {
+        type: String,
+        required: "No company name provided"
     },
     proof_of_payment: {
         type: String,
@@ -64,5 +68,5 @@ var Payment_Request_Schema = {
     }
 };
 
-
+mongoose.model("Payment_Request", Payment_Request_Schema);
 

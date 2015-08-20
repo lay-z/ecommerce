@@ -119,7 +119,7 @@ Ripple_Account_Schema.methods.create_payment_object= function(options, callback)
     var self = this;
     var issuer = "";
     if(options.issuer) issuer = options.issuer;
-    console.log(issuer)
+    //console.log(issuer)
 
     var payment = {
         "secret": self.secret,
