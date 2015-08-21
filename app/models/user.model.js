@@ -10,10 +10,7 @@ var mongoose = require('mongoose'),
     mongoose_error_handler = require('./mongoose_error_handling').error_descriptor,
     crypto = require('crypto');
 
-// Password must be greater than 6 chars
-var validatePassword = function(password) {
-    return password.length > 5;
-};
+
 
 var UserSchema = new Schema({
     first_name: {
@@ -29,7 +26,7 @@ var UserSchema = new Schema({
     phone_number: {
         type: String,
         trim: true,
-        required: "email address is required",
+        required: "phone number is required",
         unique: true,
         match: [/^\d+$/, 'Please fill valid number']
     },
@@ -57,6 +54,8 @@ UserSchema.methods.encryptSecret = function(pin) {
 };
 
 UserSchema.methods.decryptSecret = function(pin) {
+    // Decrypts ripple secret using pin
+    // If pin incorrect returns false
 
     // Create key using combination of pin and salt
     var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 4096, 128, 'sha256'), 'utf8')
@@ -80,9 +79,22 @@ UserSchema.methods.authenticate = function(pin) {
     return this.pin === this.hashPin(pin);
 };
 
+var validatePassword = function(pin) {
+// pin must be greater than 6 chars and all numbers
+    return /^\d+$/.test(pin) && pin.length > 5;
+};
+
 UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
     var pin = user.pin;
     var user = new User(user);
+
+    // Validate pin
+    if(!validatePassword(pin)) {
+        return callback({
+            success: false,
+            message: "Pin can only be digits and must be 6 digits or longer"
+        })
+    }
 
     // Update the User to also include pointer to ripple wallet
     user.ripple_account.push(wallet);

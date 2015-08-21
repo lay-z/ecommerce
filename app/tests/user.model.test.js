@@ -34,7 +34,7 @@ describe('User model', function() {
         User.remove().exec(done);
     });
 
-    describe.only('#save', function() {
+    describe('#save', function() {
 
         it('should save User and ripple account into empty database', function (done) {
             User.save_user_and_wallet(user1, wallet, function(err){

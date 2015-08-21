@@ -53,7 +53,7 @@ describe("Ripple routes", function() {
         });
     });
 
-    describe.skip("Ripple Payments", function () {
+    describe.only("Ripple Payments", function () {
         this.timeout(12000);
 
         after(function (done) {
@@ -82,12 +82,48 @@ describe("Ripple routes", function() {
             });
         });
 
+        it("Should return error if incorrect pin sent with request", function(done) {
+            request.post('/v1/user/' + customer1.phone_number + '/transfer')
+                .send({
+                    payee: customer2.phone_number,
+                    amount: "2000",
+                    pin: "990099"
+                })
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect(400)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    // validate response
+                    res.body.message.should.equal("incorrect pin entered");
+                    res.body.success.should.equal(false)
+                    done();
+                })
+        })
+
+        it("Should return error if no pin sent with request", function(done) {
+            request.post('/v1/user/' + customer1.phone_number + '/transfer')
+                .send({
+                    payee: customer2.phone_number,
+                    amount: "2000"
+                })
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .expect(400)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    // validate response
+                    res.body.message.should.equal("pin was not sent in body");
+                    res.body.success.should.equal(false)
+                    done();
+                })
+        })
+
         it("Should return error object if payee account is not on system", function (done) {
             // Send request out to /v1/user/transfer/:email
             request.post('/v1/user/' + customer1.phone_number + '/transfer')
                 .send({
                     payee: customer2.phone_number,
                     amount: "2000",
+                    pin: customer1.pin
                 })
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(400)
@@ -104,7 +140,8 @@ describe("Ripple routes", function() {
             request.post('/v1/user/' + customer2.phone_number + '/transfer')
                 .send({
                     payee: customer1.phone_number,
-                    amount: "2000"
+                    amount: "2000",
+                    pin: customer2.pin
                 })
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(400)
@@ -130,7 +167,8 @@ describe("Ripple routes", function() {
                     request.post('/v1/user/' + customer2.phone_number + '/transfer')
                         .send({
                             payee: customer1.phone_number,
-                            amount: "2000"
+                            amount: "2000",
+                            pin: customer2.pin
                         })
                         .expect('Content-Type', 'application/json; charset=utf-8')
                         .expect(400)
@@ -150,7 +188,8 @@ describe("Ripple routes", function() {
             request.post('/v1/user/' + customer1.phone_number + '/transfer')
                 .send({
                     payee: customer2.phone_number,
-                    amount: "2000"
+                    amount: "2000",
+                    pin: customer1.pin
                 })
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(400)
@@ -169,7 +208,9 @@ describe("Ripple routes", function() {
             this.timeout(36000);
             /* Setup accounts */
             User.findOne({phone_number: customer2.phone_number}, function (err, user) {
-
+                if(!user.decryptSecret(customer2.pin)) {
+                    throw new Error("Pin for customer 2 incorrect!!")
+                }
                 var options = {
                     payee: user.ripple_account[0].address,
                     currency: "XRP",
@@ -179,11 +220,13 @@ describe("Ripple routes", function() {
                     if (err) throw err;
                     user.ripple_account[0].extend_trust(bank.address, function (err, response) {
                         if (err) throw err;
+
                         /* Begin actual test */
                         request.post('/v1/user/' + customer2.phone_number + '/transfer')
                             .send({
                                 payee: customer1.phone_number,
-                                amount: "2000"
+                                amount: "2000",
+                                pin: customer2.pin
                             })
                             .expect('Content-Type', 'application/json; charset=utf-8')
                             .expect(400)
@@ -223,7 +266,8 @@ describe("Ripple routes", function() {
                 request.post('/v1/user/' + customer1.phone_number + '/transfer')
                     .send({
                         payee: customer2.phone_number,
-                        amount: "2000"
+                        amount: "2000",
+                        pin: customer1.pin
                     })
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .expect(200)

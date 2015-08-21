@@ -41,3 +41,24 @@ module.exports.validate_user = function(req, res, next) {
         next();
     });
 };
+
+module.exports.decrypt_secret = function (req, res, next) {
+    // Assumes that the user has been authenticated (through passport)
+    // function decrypts ripple_secret based on pin passed in
+    if(!req.body.pin) {
+        return res.status(400).json({
+            success: false,
+            message: "pin was not sent in body"
+        })
+    }
+
+    if(!req.user.decryptSecret(req.body.pin)) {
+        return res.status(400).json({
+            success: false,
+            message: "incorrect pin entered"
+        })
+    }
+
+    // If pin was succesfull
+    next();
+}
