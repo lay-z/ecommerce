@@ -2,6 +2,7 @@
 var mongoose = require('mongoose'),
     should = require('chai').should(),
     User = mongoose.model('User');
+    //require('..');
 
 // Global User for use in functions
 var user1, user2, wallet;
@@ -34,7 +35,7 @@ describe('User model', function() {
         User.remove().exec(done);
     });
 
-    describe('#save', function() {
+    describe.only('#save', function() {
 
         it('should save User and ripple account into empty database', function (done) {
             User.save_user_and_wallet(user1, wallet, function(err){
@@ -54,7 +55,7 @@ describe('User model', function() {
 
         it("Shouldn't be able to save with invalid phone_number", function(done){
             user1.phone_number = "invalidnumber";
-            User.save_user_and_wallet(user1, null, function(err) {
+            User.save_user_and_wallet(user1, wallet, function(err) {
                 err.should.exist;
                 err.should.have.deep.property("success", false);
                 done()
@@ -62,25 +63,28 @@ describe('User model', function() {
         });
 
         it("Should not be able to save two users with same phone_number", function(done){
-           User.save_user_and_wallet(user2, null, function(err) {
+           User.save_user_and_wallet(user2, wallet, function(err) {
                err.should.exist;
                err.should.have.deep.property("success", false);
                done()
            })
         });
 
-        it("Should have produced a hash of saved pin", function(done) {
+        it("Should have encrypted ripple secret", function(done) {
             User.findOne({phone_number: user1.phone_number}, function(err, document) {
                 should.not.exist(err);
-                should.not.equal(user1.pin, document.pin);
+                console.log(document.ripple_account[0].secret)
+                should.not.equal(wallet.secret, document.ripple_account[0].secret);
                 done();
             });
         });
 
-        it("Should be able to authenticate user based on non hashed pin", function(done) {
+        it("Should be able to decrypt ripple secret using correct pin", function(done) {
             User.findOne({phone_number: user1.phone_number}, function(err, user) {
                 should.not.exist(err);
-                user.authenticate(user1.pin).should.be.true;
+                user.decryptSecret(user1.pin);
+                console.log(user.ripple_account[0].secret)
+                should.equal(user.ripple_account[0].secret, wallet.secret);
                 done();
             });
         })

@@ -33,37 +33,41 @@ var UserSchema = new Schema({
         unique: true,
         match: [/^\d+$/, 'Please fill valid number']
     },
-    pin: {
-        type: String,
-        default: '',
-        validate: [validatePassword, 'Pin should be longer']
-    },
     salt: {
         type: String
     },
     ripple_account: [Ripple_Account_Schema],
 });
 
-UserSchema.pre('save', function(next) {
-    // If the user
-    if (this.pin && this.pin.length > 5) {
-        this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-        this.pin = this.hashPin(this.pin);
-    }
-
-    next();
-});
-
-/**
- * Create instance method for hashing a password
- */
-UserSchema.methods.hashPin = function(pin) {
-    if (this.salt && pin) {
-        return crypto.pbkdf2Sync(pin, this.salt, 10000, 64).toString('base64');
-    } else {
-        return pin;
-    }
+UserSchema.methods.generate_salt = function() {
+    // Creates a new salt and saves it to the user
+    this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
 };
+
+UserSchema.methods.encryptSecret = function(pin) {
+    // Create key using combination of pin and salt
+    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 4096, 128, 'sha256'), 'utf8')
+
+    // Create cipher and encrypt to be held in base64
+    var cipher = crypto.createCipher('aes128', key)
+    var crypted = cipher.update(this.ripple_account[0].secret,'utf8','base64')
+    crypted += cipher.final('base64');
+
+    this.ripple_account[0].secret = crypted;
+};
+
+UserSchema.methods.decryptSecret = function(pin) {
+
+    // Create key using combination of pin and salt
+    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 4096, 128, 'sha256'), 'utf8')
+
+    // Create cipher and encrypt to be held in base64
+    var decipher = crypto.createDecipher('aes128', key)
+    var decrypted = decipher.update(this.ripple_account[0].secret,'base64','utf8')
+    decrypted += decipher.final('utf8');
+
+    this.ripple_account[0].secret = decrypted;
+}
 
 /**
  * Create instance method for authenticating user
@@ -73,6 +77,7 @@ UserSchema.methods.authenticate = function(pin) {
 };
 
 UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
+    var pin = user.pin;
     var user = new User(user);
 
     // Update the User to also include pointer to ripple wallet
@@ -80,13 +85,21 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
 
     // Check if User email address already exists before continue
     check_if_number_exists(user.phone_number, function(err){
+
         if (err) return callback(err);
+        //console.log(user.ripple_account[0].secret);
+        // Create a salt
+        user.generate_salt();
+
+        // Encrypt ripple_secret using pin
+        user.encryptSecret(pin);
 
         user.save(function (err) {
             if (err) {
                 var e = mongoose_error_handler(err);
                 return callback(e);
             }
+            //console.log(user.ripple_account[0].secret);
             callback();
         });
     });
