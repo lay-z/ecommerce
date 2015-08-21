@@ -17,12 +17,22 @@ module.exports.initialize = function() {
         })
     }));
 
-    //passport.use('user-digest')
-
     // For authenticating users
-    //passport.use('user-digest')
-}
+    passport.use('user-digest', new Strategy( {qop: 'oauth'}, function(username, callback){
+        User.findOne({"device.id": username}, function(err, user) {
+            // If retailer doesn't have id then return no matching _id
+            if (err) return callback(err);
+            if(!user) return callback(null, false);
+            return callback(null, user, user.device.secret)
+        })
+    }));
+};
 
-module.exports.digest_authentication = function() {
-    return passport.authenticate('retailer-digest',{session: false });
+module.exports.digest_authentication = function(retailer) {
+    var toreturn;
+    retailer ?
+        toreturn = passport.authenticate('retailer-digest',{session: false })
+        :
+        toreturn = passport.authenticate('user-digest', {session:false})
+    return toreturn
 }
