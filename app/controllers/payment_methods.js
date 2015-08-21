@@ -75,16 +75,20 @@ module.exports.validate_account = function(req, res) {
         // Extend trust from user to bank
         user_account.extend_trust(bank.address, function (err, response) {
             if (err) return res.status(500).json(error_msg);
-            res.json({
-                success: true,
-                message: "Users account has now been validated"
-            })
-            user_account.validated = true;
-            user.save(function (err) {
-                if (err) {
-                    console.log(err);
-                }
-            })
+
+            // change users account status to to validated
+            User.findOne({phone_number: user.phone_number}, function(err, document) {
+                if (err) console.log(err);
+                document.ripple_account[0].validated =  true;
+                document.save(function(err) {
+                    if(err) console.log(err);
+
+                    res.json({
+                        success: true,
+                        message: "Users account has now been validated"
+                    })
+                })
+            });
         })
     })
 };

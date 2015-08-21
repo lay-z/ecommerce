@@ -8,8 +8,8 @@ var payment_methods = require('../../app/controllers/payment_methods'),
 module.exports.routes = function(app) {
     app.post("/v1/user/:email/transfer", middleware.validate_user, json_parser,
                             middleware.decrypt_secret, payment_methods.pay_user);
-    app.get("/v1/user/:email/validate", middleware.validate_user,
-                            payment_methods.validate_account);
+    app.post("/v1/user/:email/validate", middleware.validate_user, json_parser,
+                            middleware.decrypt_secret, payment_methods.validate_account);
     app.post("/v1/user/:email/deposit", middleware.validate_user, json_parser,
                             middleware.decrypt_secret, payment_methods.deposit);
     app.post("/v1/user/:email/payment_request/:request", middleware.validate_user,

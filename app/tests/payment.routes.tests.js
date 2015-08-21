@@ -53,7 +53,7 @@ describe("Ripple routes", function() {
         });
     });
 
-    describe.only("Ripple Payments", function () {
+    describe("Ripple Payments", function () {
         this.timeout(12000);
 
         after(function (done) {
@@ -301,7 +301,8 @@ describe("Ripple routes", function() {
 
         it("Should be able to validate user account that exists in database", function (done) {
             this.timeout(10000);
-            request.get('/v1/user/' + customer1.phone_number + '/validate')
+            request.post('/v1/user/' + customer1.phone_number + '/validate')
+                .send({pin: customer1.pin})
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .end(function (err, res) {
@@ -320,7 +321,8 @@ describe("Ripple routes", function() {
         })
 
         it("Should return an error when trying to validate a user account that already exists", function (done) {
-            request.get('/v1/user/' + customer1.phone_number + '/validate')
+            request.post('/v1/user/' + customer1.phone_number + '/validate')
+                .send({pin: customer1.pin})
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(400)
                 .end(function (err, res) {
@@ -333,14 +335,15 @@ describe("Ripple routes", function() {
         })
     });
 
-    describe("Depositing money into account", function () {
+    describe.only("Depositing money into account", function () {
         this.timeout(15000);
 
         before(function (done) {
             Ripple_Account.generate_wallet(function (err, wallet) {
                 if (err) throw err;
                 User.save_user_and_wallet(customer1, wallet, function (err) {
-                    request.get("/v1/user/" + customer1.phone_number + '/validate')
+                    request.post("/v1/user/" + customer1.phone_number + '/validate')
+                        .send({pin:customer1.pin})
                         .end(done);
                 });
             })
@@ -355,7 +358,7 @@ describe("Ripple routes", function() {
         it("Should be able to deposit money into account that exists and is validated", function (done) {
             var amount = 500;
             request.post('/v1/user/' + customer1.phone_number + '/deposit')
-                .send({amount: amount})
+                .send({amount: amount, pin: customer1.pin})
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .expect(200)
                 .end(function (err, res) {
@@ -368,7 +371,7 @@ describe("Ripple routes", function() {
 
                         user.ripple_account[0].get_balances(function (err, response) {
                             if (err) throw err;
-                            console.log(response);
+                            //console.log(response);
                             done()
                         });
                     })
