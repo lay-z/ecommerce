@@ -2,7 +2,6 @@
 var mongoose = require('mongoose'),
     should = require('chai').should(),
     User = mongoose.model('User');
-    //require('..');
 
 // Global User for use in functions
 var user1, user2, wallet;
@@ -85,6 +84,15 @@ describe('User model', function() {
                 user.decryptSecret(user1.pin);
                 console.log(user.ripple_account[0].secret)
                 should.equal(user.ripple_account[0].secret, wallet.secret);
+                done();
+            });
+        })
+
+        it("Should NOT be able to decrypt ripple secret using incorrect pin", function(done) {
+            User.findOne({phone_number: user1.phone_number}, function(err, user) {
+                should.not.exist(err);
+                user.decryptSecret("776589").should.be.false;
+                should.not.equal(user.ripple_account[0].secret, wallet.secret);
                 done();
             });
         })

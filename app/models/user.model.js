@@ -63,10 +63,14 @@ UserSchema.methods.decryptSecret = function(pin) {
 
     // Create cipher and encrypt to be held in base64
     var decipher = crypto.createDecipher('aes128', key)
-    var decrypted = decipher.update(this.ripple_account[0].secret,'base64','utf8')
-    decrypted += decipher.final('utf8');
-
+    try {
+        var decrypted = decipher.update(this.ripple_account[0].secret,'base64','utf8')
+        decrypted += decipher.final('utf8');
+    } catch(error) {
+        return false
+    }
     this.ripple_account[0].secret = decrypted;
+    return true;
 }
 
 /**
