@@ -335,7 +335,7 @@ describe("Ripple routes", function() {
         })
     });
 
-    describe.only("Depositing money into account", function () {
+    describe("Depositing money into account", function () {
         this.timeout(15000);
 
         before(function (done) {

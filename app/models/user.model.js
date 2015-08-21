@@ -34,11 +34,25 @@ var UserSchema = new Schema({
         type: String
     },
     ripple_account: [Ripple_Account_Schema],
+    device: {
+        id: {
+            type: String
+        },
+        secret: {
+            type: String
+        }
+    }
 });
 
 UserSchema.methods.generate_salt = function() {
     // Creates a new salt and saves it to the user
-    this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+    this.salt = new Buffer(crypto.randomBytes(32).toString('base64'), 'base64');
+};
+
+UserSchema.methods.generateAndSave_deviceIDsecret = function() {
+    // Creates new device IDs and secrets
+    this.device.id = new Buffer(crypto.randomBytes(32).toString('base64'));
+    this.device.secret = new Buffer(crypto.randomBytes(32).toString('base64'));
 };
 
 UserSchema.methods.encryptSecret = function(pin) {

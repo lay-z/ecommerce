@@ -23,7 +23,7 @@ var Retailer_Schema = new Schema({
 
 Retailer_Schema.pre('save', function(next) {
     // Generate secret on saving retailer to disk
-    this.secret = new Buffer(crypto.randomBytes(16).toString('base64'));
+    this.secret = new Buffer(crypto.randomBytes(32).toString('base64'));
     next();
 });
 

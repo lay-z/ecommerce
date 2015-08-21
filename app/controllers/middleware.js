@@ -31,7 +31,7 @@ module.exports.validate_user = function(req, res, next) {
     User.findOne({phone_number: phone_number}, function(err, user) {
         // Check if payer is a valid user of the system
         if (err) return res.status(400).json(err);
-        if (!user) res.status(400).json({
+        if (!user) return res.status(400).json({
             success: false,
             message: "Invalid phone_number; phone_number has not been registered"
         });
