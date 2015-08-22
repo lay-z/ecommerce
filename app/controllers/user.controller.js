@@ -105,23 +105,23 @@ module.exports.log_device = function(req, res) {
     }
 
     User.findOne({phone_number:req.body.phone_number}, function(err, user) {
-        if (err|!user) return res.status(400).json({
+        if (err | !user) return res.status(400).json({
             success: false,
             message: "Invalid phone_number; phone_number has not been registered"
         });
 
         //Check that user doesn't already have a registered device
-        if(user.device.id) {
+        if (user.device.id) {
             return res.status(400).json({
                 success: false,
                 message: "A device has already been registered " +
-                            "please sign out of that before registering any new ones"
+                "please sign out of that before registering any new ones"
             })
         }
 
         // Check if pin is legit
-        var decrypt_test = new User(user);
-        if(!decrypt_test.decryptSecret(req.body.pin)) {
+
+        if (!user.decryptSecret(req.body.pin)) {
             return res.status(400).json({
                 success: false,
                 message: "Incorrect pin provided"
@@ -132,16 +132,29 @@ module.exports.log_device = function(req, res) {
         user.generateAndSave_deviceIDsecret();
 
         // Send back details to device to save
-        user.save(function(err) {
-            if(err) return res.status(500).json({success: false, message:"error saving deviceID and secret"})
+        User.update({phone_number: user.phone_number}, {
+            "device.id": user.device.id,
+            "device.secret": user.device.secret
+        }, function (err) {
+            if (err) return res.status(500).json({success: false, message: "error saving deviceID and secret"})
 
-            res.send({
+            res.json({
                 success: true,
                 deviceID: user.device.id,
                 secret: user.device.secret
             })
+        });
+    });
+}
+
+module.exports.log_out_device = function(req, res) {
+    // Assumes user has been digest-authenticated (should i?)
+    req.user.device = null;
+    req.user.save(function(err) {
+        if(err) return res.send(500).json({success: false, message: "Could not log out user"})
+
+        res.json({
+            success: true
         })
     })
 }
-
-

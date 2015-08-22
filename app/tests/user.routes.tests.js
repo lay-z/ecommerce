@@ -114,12 +114,6 @@ describe('User routes', function() {
 
     describe('Getting user account information', function() {
 
-        after(function(done) {
-            console.log("removing all users and accounts from test db");
-            User.remove().exec();
-            done();
-        });
-
         // Master account information
         var master_account = new Ripple_Account({
             address: "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
@@ -127,6 +121,11 @@ describe('User routes', function() {
         });
         var ripple_account;
 
+        after(function(done) {
+            console.log("removing all users and accounts from test db");
+            User.remove().exec();
+            done();
+        });
 
         // Set up User and wallet in db
         before(function(done){
@@ -141,6 +140,8 @@ describe('User routes', function() {
                 // Send XRP to account
                 master_account.send_payment({currency: "XRP", amount: 250,
                     payee: ripple_account.address}, function(err, body) {
+
+                    // get credentials
                     done();
                 });
             })

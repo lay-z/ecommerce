@@ -4,7 +4,7 @@
 var retailer_controller = require('../../app/controllers/retailer.controller'),
     middleware = require('../../app/controllers/middleware'),
     json_parser = require('body-parser').json(),
-    digest_authentication = require('../passport').digest_authentication(true);
+    digest_authentication = require('../passport').digest_authentication('retailer');
 
 
 
