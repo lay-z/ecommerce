@@ -149,7 +149,7 @@ describe('User routes', function() {
 
 
 
-       it("Should send empty array of balances if user exists but has not deposited any money", function(done){
+       it("Should send empty array of balances if user exists, has validated their account but has not deposited any money", function(done){
 
             // Make get request to /v1/user/:email
             request.get('/v1/user/' + user.phone_number)

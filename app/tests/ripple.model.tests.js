@@ -34,6 +34,7 @@ describe("Ripple_Account Tests", function() {
     };
 
     describe("Generate wallet", function() {
+
         it("Should be able to generate static wallets", function(done) {
             Ripple_Account.generate_wallet(function(err, wallet) {
                 should.not.exist(err);
@@ -262,6 +263,38 @@ describe("Ripple_Account Tests", function() {
                     done();
                 })
             });
+        })
+    })
+
+    describe.only("previous_transactions", function() {
+        this.timeout(10000);
+        // local transaction account
+        var transaction_account;
+        var bank;
+
+        before(function(done) {
+            // Generate a new ripple_account
+            Ripple_Account.generate_wallet(function(err, wallet) {
+                transaction_account = new Ripple_Account(wallet);
+                bank = new Ripple_Account(Bank);
+                bank.send_payment({
+                    currency: "XRP",
+                    amount: "250",
+                    payee: transaction_account.address
+                }, function(err, response) {
+                    if (err) return done(err);
+                    // Extend trust from account to bank
+                    transaction_account.extend_trust(bank.address, done);
+                });
+            })
+        });
+
+        it("Should return an empty array for a validated account that doesn't have any KSH transactions", function(done) {
+            transaction_account.previous_transactions(function(err, response) {
+                if (err) return done(err);
+                console.log(response);
+                done();
+            })
         })
     })
 });

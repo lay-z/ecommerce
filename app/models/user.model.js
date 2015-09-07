@@ -46,18 +46,22 @@ var UserSchema = new Schema({
 
 UserSchema.methods.generate_salt = function() {
     // Creates a new salt and saves it to the user
-    this.salt = new Buffer(crypto.randomBytes(32).toString('base64'), 'base64');
+    this.salt = new Buffer(crypto.randomBytes(128).toString('base64'), 'base64');
+
+    // TODO encrypt the salt before saving
 };
 
 UserSchema.methods.generateAndSave_deviceIDsecret = function() {
     // Creates new device IDs and secrets
-    this.device.id = new Buffer(crypto.randomBytes(32).toString('base64'));
-    this.device.secret = new Buffer(crypto.randomBytes(32).toString('base64'));
+    this.device.id = new Buffer(crypto.randomBytes(128).toString('base64'));
+    this.device.secret = new Buffer(crypto.randomBytes(128).toString('base64'));
 };
 
 UserSchema.methods.encryptSecret = function(pin) {
+    // TODO decrypt the salt
+
     // Create key using combination of pin and salt
-    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 4096, 128, 'sha256'), 'utf8')
+    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 64, 128, 'sha256'), 'utf8')
 
     // Create cipher and encrypt to be held in base64
     var cipher = crypto.createCipher('aes128', key)
@@ -71,8 +75,11 @@ UserSchema.methods.decryptSecret = function(pin) {
     // Decrypts ripple secret using pin
     // If pin incorrect returns false
 
+    // TODO decrypt the salt
+
+
     // Create key using combination of pin and salt
-    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 4096, 128, 'sha256'), 'utf8')
+    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 64, 128, 'sha256'), 'utf8')
 
     // Create cipher and encrypt to be held in base64
     var decipher = crypto.createDecipher('aes128', key)

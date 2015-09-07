@@ -2,7 +2,8 @@
  * Created by priyav on 20/08/15.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    request = require('request');
 
 var supported_currencies = function(cur) {
     // checks if curr (3 letter currency code) is in list of supported currencies
@@ -35,7 +36,7 @@ var supported_values = function(value) {
     return check_digits(value) && decimalPlace;
 };
 
-var Payment_Request_Schema = {
+var Payment_Request_Schema = new Schema ({
     customer_number: {
         type: String,
         required: "Payer phone_number required"
@@ -65,7 +66,27 @@ var Payment_Request_Schema = {
     proof_of_payment: {
         type: String,
         default: null
+    },
+    callback_url: {
+        type: String,
+        required: "No callback_url provided"
     }
+});
+
+Payment_Request_Schema.methods.webhook_callback = function(json_response, callback) {
+    // Sends JSON response object back to callback_url specified by retailer
+    var self = this;
+
+    var options = {
+        url: self.callback_url,
+        json: true,
+        body: json_response
+    };
+    request.post(options, function(err, head) {
+        if(err) return callback(err, head);
+        callback(null, head);
+    })
+
 };
 
 mongoose.model("Payment_Request", Payment_Request_Schema);

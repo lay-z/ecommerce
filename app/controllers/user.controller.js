@@ -119,6 +119,9 @@ module.exports.log_device = function(req, res) {
             })
         }
 
+        // Check if user has been validated, if not validate user
+
+
         // Check if pin is legit
 
         if (!user.decryptSecret(req.body.pin)) {
@@ -148,7 +151,7 @@ module.exports.log_device = function(req, res) {
 }
 
 module.exports.log_out_device = function(req, res) {
-    // Assumes user has been digest-authenticated (should i?)
+    // Assumes user has been digest-authenticated
     req.user.device = null;
     req.user.save(function(err) {
         if(err) return res.send(500).json({success: false, message: "Could not log out user"})

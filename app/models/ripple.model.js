@@ -140,7 +140,7 @@ Ripple_Account_Schema.methods.create_payment_object= function(options, callback)
                 "issuer": issuer
             },
             "invoice_id": "",
-            "paths": [], //TODO work out if path necessary when transfering value between accounts
+            "paths": [],
             "flag_no_direct_ripple": false,
             "flag_partial_payment": false
         }
@@ -219,6 +219,21 @@ Ripple_Account_Schema.methods.create_trust_object = function(options) {
         return null;
     }
 };
+
+Ripple_Account_Schema.methods.previous_transactions = function(callback) {
+    var self = this;
+    // Returns array of previous transactions made by Ripple_account
+    // Previous transactions are passed in as an argument to callback
+    var url =  '/v1/accounts/'+this.address+'/payments'
+
+    // make get request to Ripple_REST/v1/accounts/:id/payments
+    get_url(url, function(err, body) {
+        if(err) return callback(err, body);
+
+        // Will need to format the response
+        callback(null, body);
+    })
+}
 
 
 Ripple_Account_Schema.statics.generate_wallet = function(callback) {

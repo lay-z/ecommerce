@@ -52,10 +52,10 @@ describe('User model', function() {
             });
         });
 
-        it("Shouldn't be able to save with invalid phone_number", function(done){
+        it("Should return an error when trying to save User with invalid phone_number", function(done){
             user1.phone_number = "invalidnumber";
             User.save_user_and_wallet(user1, wallet, function(err) {
-                err.should.exist;
+                should.exist(err);
                 err.should.have.deep.property("success", false);
                 done()
             });
