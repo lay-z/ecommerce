@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4caa3c7d-d36e-4be9-915c-10b7799809f9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/ripple.model.js" afterPath="$PROJECT_DIR$/app/models/ripple.model.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/user.controller.js" afterPath="$PROJECT_DIR$/app/controllers/user.controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/routes/user.routes.js" afterPath="$PROJECT_DIR$/app/routes/user.routes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/routes/payment.routes.js" afterPath="$PROJECT_DIR$/app/routes/payment.routes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/payment_methods.js" afterPath="$PROJECT_DIR$/app/controllers/payment_methods.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ecommerce.iws" />
@@ -26,7 +25,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="user.controller.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="user.controller.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/user.controller.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
@@ -60,7 +59,17 @@
         <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="payment.routes.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.52089137">
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -148,7 +157,6 @@
         <option value="$PROJECT_DIR$/app/models/models.js" />
         <option value="$PROJECT_DIR$/app/controllers/user_methods.js" />
         <option value="$PROJECT_DIR$/app/controllers/retailer.controller.js" />
-        <option value="$PROJECT_DIR$/app/controllers/payment_methods.js" />
         <option value="$PROJECT_DIR$/app/tests/payment.routes.tests.js" />
         <option value="$PROJECT_DIR$/app/models/retailer.model.js" />
         <option value="$PROJECT_DIR$/app/controllers/middleware.js" />
@@ -157,7 +165,6 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/app/tests/user.model.test.js" />
         <option value="$PROJECT_DIR$/app/tests/user.routes.tests.js" />
-        <option value="$PROJECT_DIR$/app/routes/payment.routes.js" />
         <option value="$PROJECT_DIR$/app/tests/test_helper_functions.js" />
         <option value="$PROJECT_DIR$/app/tests/helper_functions.js" />
         <option value="$PROJECT_DIR$/app/models/user.model.js" />
@@ -167,6 +174,8 @@
         <option value="$PROJECT_DIR$/app/models/ripple.model.js" />
         <option value="$PROJECT_DIR$/app/routes/user.routes.js" />
         <option value="$PROJECT_DIR$/app/controllers/user.controller.js" />
+        <option value="$PROJECT_DIR$/app/controllers/payment_methods.js" />
+        <option value="$PROJECT_DIR$/app/routes/payment.routes.js" />
       </list>
     </option>
   </component>
@@ -667,7 +676,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441635665750</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Validation occurs with loggin in a device if Ripple_Account is not validated">
+      <created>1441643862788</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1441643862789</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TodoView">
@@ -735,7 +750,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Increased testing. Modified mongoose User schema to do more work" />
     <MESSAGE value="Adding extra files" />
     <MESSAGE value="Created tests and functionality for displaying user account information" />
     <MESSAGE value="Moved route middleware into seperate folder. Create payment functionality for ripple_account model" />
@@ -760,7 +774,8 @@
     <MESSAGE value="Digest authorisation put in place" />
     <MESSAGE value="Users can now logout of devices that they were previously logged in on" />
     <MESSAGE value="Retailer can now get notified of changes to payment_request through webhook" />
-    <option name="LAST_COMMIT_MESSAGE" value="Retailer can now get notified of changes to payment_request through webhook" />
+    <MESSAGE value="Validation occurs with loggin in a device if Ripple_Account is not validated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Validation occurs with loggin in a device if Ripple_Account is not validated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -989,14 +1004,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/routes/retailer.routes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1081,18 +1088,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/payment_request.model.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="76" column="48" selection-start-line="76" selection-start-column="48" selection-end-line="76" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/user.controller.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="139" column="13" selection-start-line="139" selection-start-column="13" selection-end-line="139" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -1113,14 +1120,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/routes/user.routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/user.model.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1129,10 +1128,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/user.controller.js">
+    <entry file="file://$PROJECT_DIR$/app/routes/user.routes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="139" column="13" selection-start-line="139" selection-start-column="13" selection-end-line="139" selection-end-column="13" />
+          <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.52089137">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>

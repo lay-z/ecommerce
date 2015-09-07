@@ -49,50 +49,6 @@ module.exports.pay_user = function(req, res) {
 };
 
 
-module.exports.validate_account = function(req, res) {
-    // Sends XRP to user and creates a trustline between user and issuing wallet
-    // Trustline is currently set at default of 10,000 KSH
-
-    var error_msg = {
-        success: false,
-        message: "Something wrong happened at the server"
-    };
-    var user = req.user;
-    var user_account = req.user.ripple_account[0];
-    var bank = new Ripple_Account(BANK);
-
-    if (user_account.validated) {
-        return res.status(400).json({
-            success: false,
-            message: "User is already validated"
-        })
-    };
-
-    // Send users wallet XRP
-    bank.send_payment(payment_options(user_account.address, 250, true), function (err, response) {
-        if (err) return res.status(500).json(error_msg);
-
-        // Extend trust from user to bank
-        user_account.extend_trust(bank.address, function (err, response) {
-            if (err) return res.status(500).json(error_msg);
-
-            // change users account status to to validated
-            User.findOne({phone_number: user.phone_number}, function(err, document) {
-                if (err) console.log(err);
-                document.ripple_account[0].validated =  true;
-                document.save(function(err) {
-                    if(err) console.log(err);
-
-                    res.json({
-                        success: true,
-                        message: "Users account has now been validated"
-                    })
-                })
-            });
-        })
-    })
-};
-
 module.exports.deposit = function(req, res) {
     var user = req.user;
     var user_acc = user.ripple_account[0];
