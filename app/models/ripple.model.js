@@ -220,6 +220,34 @@ Ripple_Account_Schema.methods.create_trust_object = function(options) {
     }
 };
 
+Ripple_Account_Schema.methods.validate_account = function(bank, callback) {
+    // Bank is the issuing gateway account that must extend trust to the account
+    // Bank will be a Ripple_Account object
+    var user_account = this;
+
+    if (user_account.validated) {
+        return callback(null)
+    };
+
+    var payment_options = {
+        payee: user_account.address,
+        amount: "200",
+        currency: "XRP"
+    }
+
+    // Send users wallet XRP
+    bank.send_payment(payment_options, function (err, response) {
+        if (err) return callback(err);
+
+        // Extend trust from user to bank
+        user_account.extend_trust(bank.address, function (err, response) {
+            if (err) return callback(err);
+
+            callback(null)
+        });
+    })
+};
+
 Ripple_Account_Schema.methods.previous_transactions = function(callback) {
     var self = this;
     // Returns array of previous transactions made by Ripple_account

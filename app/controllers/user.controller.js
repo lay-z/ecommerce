@@ -2,7 +2,8 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account'),
     Payment_Request = mongoose.model('Payment_Request'),
-    assert = require('assert');
+    assert = require('assert'),
+    BANK = require('../../config/config').bank;
 
 
 module.exports.save_user = function(req, res) {
@@ -94,6 +95,7 @@ module.exports.get_payment_requests = function(req, res) {
 
 
 module.exports.log_device = function(req, res) {
+    var bank = new Ripple_Account(BANK);
     // User won't have logged in. Controller checks if phone_number and
     // pin are legit. If they are generates a random deviceID and secret to send back
     if(!(req.body.phone_number && req.body.pin)) {
@@ -119,7 +121,6 @@ module.exports.log_device = function(req, res) {
             })
         }
 
-        // Check if user has been validated, if not validate user
 
 
         // Check if pin is legit
@@ -131,22 +132,35 @@ module.exports.log_device = function(req, res) {
             })
         }
 
-        // All seems alright lets generate secret and deviceID
-        user.generateAndSave_deviceIDsecret();
+        // validate users_ripple account if not validated
+        user.ripple_account[0].validate_account(bank, function(err) {
+           if(err) return res.status(500).json({
+               success: false,
+               message: "Error validating users account, something went wrong at the server"
+           });
 
-        // Send back details to device to save
-        User.update({phone_number: user.phone_number}, {
-            "device.id": user.device.id,
-            "device.secret": user.device.secret
-        }, function (err) {
-            if (err) return res.status(500).json({success: false, message: "error saving deviceID and secret"})
+            // All seems alright lets generate secret and deviceID
+            user.generateAndSave_deviceIDsecret();
 
-            res.json({
-                success: true,
-                deviceID: user.device.id,
-                secret: user.device.secret
-            })
-        });
+            // Send back details to device to save
+            User.update({phone_number: user.phone_number}, {
+                    "device.id": user.device.id,
+                    "device.secret": user.device.secret,
+                    "ripple_account.0.validated": true
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({success: false, message: "error saving deviceID and secret"})
+                }
+
+                res.json({
+                    success: true,
+                    deviceID: user.device.id,
+                    secret: user.device.secret
+                })
+            });
+        })
+
     });
 }
 
