@@ -8,6 +8,7 @@ var express = require('express'),
     routes = require('./app/routes/export.routes').routes,
     path = require('path'),
     passport = require('passport'),
+    morgan = require('morgan'),
     static_folder = (path.join(__dirname, 'global'));
 
 // Initialise passport middleware
@@ -21,6 +22,7 @@ var app = express(db);
 // Can place multiple statics
 app.use(express.static(static_folder));
 //app.use(passport)
+app.use(morgan('combined'));
 
 // Set up authentication strategies
 require('./app/passport').initialize();
