@@ -140,7 +140,6 @@ Ripple_Account_Schema.methods.create_payment_object= function(options, callback)
                 "issuer": issuer
             },
             "invoice_id": "",
-            "paths": [],
             "flag_no_direct_ripple": false,
             "flag_partial_payment": false
         }
