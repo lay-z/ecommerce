@@ -296,5 +296,23 @@ describe("Ripple_Account Tests", function() {
                 done();
             })
         })
+
+        it("Should return some values for validated account that has been sent KSH", function(done) {
+            // When
+            bank.send_payment({
+                currency: "KSH",
+                amount: "100",
+                payee: transaction_account.address,
+                issuer: bank.address
+            }, function(err, response) {
+                if (err) return done(err);
+
+                //Then
+                transaction_account.previous_transactions(function(err, response) {
+                    console.log(response);
+                    done();
+                })
+            })
+        })
     })
 });

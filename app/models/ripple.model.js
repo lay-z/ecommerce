@@ -259,7 +259,8 @@ Ripple_Account_Schema.methods.previous_transactions = function(callback) {
         if(err) return callback(err, body);
 
         var destination_account = true;
-
+        console.log(body)
+        console.log(body["payments"])
         // Will need to format the response
         callback(null, process_prev_payments(body.payments, destination_account));
     })
@@ -271,7 +272,7 @@ function process_prev_payments (payments, destination_account) {
     var formatted = [];
     var payment;
     var obj;
-
+    console.log(payments);
     if(destination_account) {
         account = "destination_account";
     }
@@ -279,7 +280,7 @@ function process_prev_payments (payments, destination_account) {
         payment = payments.from[i]
         if(payment.source_amount.currency === "KSH") {
             obj = {
-                amount: payment.source_amount.value,
+                amount: payment.source_amount.value
             };
             destination_account? obj.to = payment[account] : obj.from = payment[account];
             formatted.push(obj)

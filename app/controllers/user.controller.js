@@ -166,8 +166,7 @@ module.exports.log_device = function(req, res) {
 
 module.exports.log_out_device = function(req, res) {
     // Assumes user has been digest-authenticated
-    req.user.device = null;
-    req.user.save(function(err) {
+    User.update({phone_number:req.user.phone_number}, {$unset:{device:""}}, function(err) {
         if(err) return res.send(500).json({success: false, message: "Could not log out user"})
 
         res.json({
