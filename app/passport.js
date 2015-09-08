@@ -3,6 +3,7 @@
  */
 var passport = require('passport'),
     Strategy = require('passport-http').DigestStrategy,
+    BasicStrategy = require('passport-http').BasicStrategy,
     Test_Strategy = require('passport-local')
     mongoose = require('mongoose'),
     Retailer = mongoose.model('Retailer'),
@@ -28,6 +29,19 @@ module.exports.initialize = function() {
             return callback(null, user, user.device.secret)
         })
     }));
+
+    passport.use('user-basic', new BasicStrategy(function(username, password, callback){
+        console.log("username = " + username)
+        console.log("password = " + password)
+        User.findOne({"device.id": username}, function(err, user) {
+            // If retailer doesn't have id then return no matching _id
+            if (err) return callback(err);
+            if(!user) return callback(null, false);
+            if(user.device.secret !== password) return callback(null, false)
+            return callback(null, user)
+        })
+    }));
+
 
     passport.use('user-test', new Strategy({
         usernameField: 'id',
@@ -58,6 +72,9 @@ module.exports.digest_authentication = function(user_type) {
             break;
         case 'user-test':
             return passport.authenticate('user-test',{session: false })
+            break;
+        case 'user-basic':
+            return passport.authenticate('user-basic',{session: false })
             break;
         default:
             throw new Error("No user type passed in to digest authentication")

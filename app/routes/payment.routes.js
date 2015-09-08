@@ -4,7 +4,7 @@
 var payment_methods = require('../../app/controllers/payment_methods'),
     middleware = require('../../app/controllers/middleware'),
     json_parser = require('body-parser').json(),
-    digest_authentication = require('../passport').digest_authentication('user');;
+    digest_authentication = require('../passport').digest_authentication('user-basic');
 
 module.exports.routes = function(app) {
     app.post("/v1/user/transfer", digest_authentication, json_parser,

@@ -1,5 +1,5 @@
 var authentication_type;
-process.env.NODE_ENV === 'test' ? authentication_type = 'user-test' : authentication_type = 'user'
+process.env.NODE_ENV === 'test' ? authentication_type = 'user-test' : authentication_type = 'user-basic'
 
 var controller = require('../../app/controllers/user.controller'),
     middleware = require('../../app/controllers/middleware'),

@@ -84,12 +84,11 @@
 		<div>
 			<form action="/v1/createUser" method="post" Content-type = "application/json" id="testForm">
 
-					Email Address: <input name="email" type="email" class="form-control" placeholder="Email">
-					Password: <input name = "password" type="password" class="form-control" id="password_input" placeholder="Password">
-					First Name: <input name = "full_name" type="text" class="form-control" id="firstname_input" placeholder="First Name">
+					Pin: <input name = "pin" type="password" class="form-control" id="pin_input" placeholder="123456">
+					First Name: <input name = "first_name" type="text" class="form-control" id="firstname_input" placeholder="First Name">
 					Surname: <input name = "surname" type="text" class="form-control" id="surname_input" placeholder="Surame">
-					Telephone Number: <input name = "tel_number"  type="tel" class="form-control" id="tel_number_input" placeholder="Surame">
-					<input type="submit" value = "Submit">
+					Phone Number: <input name = "phone_number"  type="tel" class="form-control" id="phone_number_input" placeholder="0779123123">
+					<!--<input type="submit" value = "Submit">-->
 			</form>
 		</div>
 		<button id="ajaxbutton">Send of AJAX post</button>
@@ -106,13 +105,19 @@
 	<script>
 		$(document).ready(function(){
 			$("#ajaxbutton").click(function(){
+                console.log($('#testForm').serializeObect())
 				$.ajax({
 					type: "POST",
-					url: "/v1/createUser",
-					data:{
-						test: "Lets see how this works"
-					},
-					contentType: 'application/json'
+					url: "v1/user/createUser",
+					data: JSON.stringify($('#testForm :input')),
+					contentType: 'application/json; charset=UTF-8',
+                    dataType: 'json',
+                    success: function(result){
+                        console.log(result);
+                    },
+                    error: function(xhr, status, error) {
+                        window.alert(JSON.parse(xhr.responseText).message);
+                    }
 				});
 			});
 		});

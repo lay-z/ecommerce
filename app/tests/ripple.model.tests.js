@@ -267,7 +267,7 @@ describe("Ripple_Account Tests", function() {
     })
 
     describe.only("previous_transactions", function() {
-        this.timeout(10000);
+        this.timeout(14000);
         // local transaction account
         var transaction_account;
         var bank;
