@@ -16,19 +16,19 @@ var UserSchema = new Schema({
     first_name: {
         type: String,
         trim: true,
-        required: "first_name is required"
+        required: "First name is required"
     },
     surname:{
         type: String,
         trim: true,
-        required: "surname is required"
+        required: "Surname is required"
     },
     phone_number: {
         type: String,
         trim: true,
-        required: "phone number is required",
+        required: "Phone number is required",
         unique: true,
-        match: [/^\d+$/, 'Please fill valid number']
+        match: [/^\d+$/, 'Phone number invalid, please use only digits']
     },
     salt: {
         type: String
@@ -158,12 +158,7 @@ var check_if_number_exists = function (number, callback) {
         if(data) {
             return callback({
                 success: false,
-                error: {
-                    message: "number already in system",
-                    fields: {
-                        number: data.phone_number
-                    }
-                }
+                message: "number already in system: " + data.phone_number,
             });
         } else { // If no data found then no number
             callback(null);
