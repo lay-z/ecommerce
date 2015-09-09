@@ -266,11 +266,575 @@ describe("Ripple_Account Tests", function() {
         })
     })
 
-    describe.only("previous_transactions", function() {
+    describe("previous_transactions", function() {
         this.timeout(14000);
         // local transaction account
         var transaction_account;
         var bank;
+
+        var mock_transactions = {
+            "payments": [
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "XRP",
+                            "value": "200",
+                            "issuer": ""
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "XRP",
+                            "value": "200",
+                            "issuer": ""
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T20:14:50.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-200.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-200.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "200",
+                                "issuer": ""
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "d7de4267-db9e-4132-87d5-ad06e1b9b913",
+                    "hash": "A1EF9966E1A12F67C4F18702518DE3C74036544F55564A190CF37439CA881B24",
+                    "ledger": "464",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "10000",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "10000",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T20:15:10.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-10000",
+                                "issuer": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS"
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-10000",
+                                "issuer": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS"
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "10000",
+                                "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "a2216d94-32b0-47c8-89a3-a0f1f0847b7d",
+                    "hash": "AEFE0C6795DDA309D7BFD4369FDDBA8293EB95B16C7843C8305B29FFA08C1C44",
+                    "ledger": "467",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "10000",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "10000",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T20:32:20.000Z",
+                        "fee": "0.000012",
+                        "result": "tecPATH_DRY",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "a0da4b88-8352-4050-9afa-4f28f5b1256f",
+                    "hash": "FE62D50356813CF571B9B4ABBDF7A0036693928A016B35D5ADE539EE9D223702",
+                    "ledger": "673",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rNtXSoVpK58iqjFDa2hnQdrdmEh3tyNtFS",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T20:32:30.000Z",
+                        "fee": "0.000012",
+                        "result": "tecPATH_DRY",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "e476f766-cc83-4c2e-b159-33784c223195",
+                    "hash": "868EEFC935927FD708B06F16EF0F24363FE5410C6B9638B3D404F1B2ED87BD6A",
+                    "ledger": "675",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rQGNsXG8X6fG1S998BJVJJEitGh58DBdMJ",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T23:18:40.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "250",
+                                "issuer": ""
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "41f029aa-559f-4269-a4f1-41d3b113454c",
+                    "hash": "260FD9BA61BC30F805736CD9591D2F8A23EC47A1E2E6E181F86C65C123E14DBE",
+                    "ledger": "2427",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rQGNsXG8X6fG1S998BJVJJEitGh58DBdMJ",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T23:18:50.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "rQGNsXG8X6fG1S998BJVJJEitGh58DBdMJ"
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "rQGNsXG8X6fG1S998BJVJJEitGh58DBdMJ"
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "100",
+                                "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "75ffd2aa-4d6a-46b0-a18d-8faaa524e1c4",
+                    "hash": "5FEEBF91A63CB73E729BDC97D11F9CC8A4E995B5794EAF2FB03428C3B2EA7661",
+                    "ledger": "2429",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "ri4RSYbUPCWKFnagyGkgsSUj6SnAM763J",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T23:20:50.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "250",
+                                "issuer": ""
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "e8f2311f-1c2c-4a8d-8d98-5d3fab286242",
+                    "hash": "43FE86F7898E946D4CC17D8ADDF8CDC6CB6DC402CFB6311492BC5E150776CC34",
+                    "ledger": "2452",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "ri4RSYbUPCWKFnagyGkgsSUj6SnAM763J",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T23:21:00.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "ri4RSYbUPCWKFnagyGkgsSUj6SnAM763J"
+                            },
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "ri4RSYbUPCWKFnagyGkgsSUj6SnAM763J"
+                            },
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "100",
+                                "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "0d740b98-4680-4cf4-92da-a9d9d8bd8f3b",
+                    "hash": "A26299A39DF5707446069085E0FF0445DA3C3292060D6A7BA01C497E9EDCC241",
+                    "ledger": "2454",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rEsA7nKwEwfph5FN5m8gZLqGNULuiUBmYz",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "XRP",
+                            "value": "250",
+                            "issuer": ""
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-08T23:21:30.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-250.000012",
+                                "issuer": ""
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "250",
+                                "issuer": ""
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "67900c7d-3cb1-4050-b7de-340b157f2056",
+                    "hash": "3A4D3E99CC2EBDE7F77A9D8F59D58C8089F984E933CA43BD7465C668BF2B3B29",
+                    "ledger": "2460",
+                    "state": "validated"
+                },
+                {
+                    "payment": {
+                        "source_account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                        "source_tag": "",
+                        "source_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "source_slippage": "0",
+                        "destination_account": "rEsA7nKwEwfph5FN5m8gZLqGNULuiUBmYz",
+                        "destination_tag": "",
+                        "destination_amount": {
+                            "currency": "KSH",
+                            "value": "100",
+                            "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                        },
+                        "invoice_id": "",
+                        "paths": "[]",
+                        "no_direct_ripple": false,
+                        "partial_payment": false,
+                        "direction": "outgoing",
+                        "timestamp": "2015-09-09T10:00:00.000Z",
+                        "fee": "0.000012",
+                        "result": "tesSUCCESS",
+                        "balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "rEsA7nKwEwfph5FN5m8gZLqGNULuiUBmYz"
+                            }
+                        ],
+                        "source_balance_changes": [
+                            {
+                                "currency": "XRP",
+                                "value": "-0.000012",
+                                "issuer": ""
+                            },
+                            {
+                                "currency": "KSH",
+                                "value": "-100",
+                                "issuer": "rEsA7nKwEwfph5FN5m8gZLqGNULuiUBmYz"
+                            }
+                        ],
+                        "destination_balance_changes": [
+                            {
+                                "currency": "KSH",
+                                "value": "100",
+                                "issuer": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                            }
+                        ],
+                        "order_changes": []
+                    },
+                    "client_resource_id": "32ee82cc-35b3-42fc-9a97-06f5dce2ef66",
+                    "hash": "3391D66F9CC444509451C027795217C3460B2DC82306C833C064AA9E8CFEB27E",
+                    "ledger": "2474",
+                    "state": "validated"
+                }
+            ],
+            "success": true
+        }
 
         before(function(done) {
             // Generate a new ripple_account
@@ -289,7 +853,7 @@ describe("Ripple_Account Tests", function() {
             })
         });
 
-        it("Should return an empty array for a validated account that doesn't have any KSH transactions", function(done) {
+        /*it("Should return an empty array for a validated account that doesn't have any KSH transactions", function(done) {
             transaction_account.previous_transactions(function(err, response) {
                 if (err) return done(err);
                 console.log(response);
@@ -312,6 +876,11 @@ describe("Ripple_Account Tests", function() {
                     console.log(response);
                     done();
                 })
+            })
+        })*/
+        describe.only("process_previous_payments", function() {
+            it("Should format payments right", function(){
+                console.log(Ripple_Account.process_prev_payments(mock_transactions.payments));
             })
         })
     })

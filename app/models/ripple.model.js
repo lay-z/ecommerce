@@ -251,42 +251,35 @@ Ripple_Account_Schema.methods.previous_transactions = function(callback) {
     var self = this;
     // Returns array of previous transactions made by Ripple_account
     // Previous transactions are passed in as an argument to callback
-    var outgoing =  '/v1/accounts/'+this.address+'/payments?direction="incoming"&validated=true'
+    var outgoing =  '/v1/accounts/'+this.address+'/payments?validated=true'
 
     // make get request to Ripple_REST/v1/accounts/:id/payments
     get_url(outgoing, function(err, body) {
         if(err) return callback(err, body);
 
         var destination_account = true;
-        console.log(body)
-        console.log(body["payments"])
+
         // Will need to format the response
-        callback(null, process_prev_payments(body.payments, destination_account));
+        callback(null, process_prev_payments(body.payments));
     })
 }
 
-function process_prev_payments (payments, destination_account) {
-    // If destination_account is set to true, keeps
-    var account = "source_account";
-    var formatted = [];
-    var payment;
-    var obj;
-    console.log(payments);
-    if(destination_account) {
-        account = "destination_account";
-    }
-    for (i in payments) {
-        payment = payments.from[i]
-        if(payment.source_amount.currency === "KSH") {
-            obj = {
-                amount: payment.source_amount.value
-            };
-            destination_account? obj.to = payment[account] : obj.from = payment[account];
-            formatted.push(obj)
-        }
-    }
-    return formatted;
+Ripple_Account_Schema.statics.process_transaction = function(transaction) {
+    // Takes in a successful ripple payment object
+    // Removes unneccessary fields
+    // Removes all transactions that were not in KSH
+    // Returns the newly formatted object
+    return {
+        from: transaction.payment.source_account,
+        to: transaction.payment.destination_account,
+        amount: transaction.payment.destination_amount,
+        timestamp: transaction.payment.timestamp,
+        direction: transaction.payment.direction,
+        hash: transaction.hash
+    };
 }
+
+
 
 
 Ripple_Account_Schema.statics.generate_wallet = function(callback) {

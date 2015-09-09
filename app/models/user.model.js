@@ -8,7 +8,8 @@ var mongoose = require('mongoose'),
     Ripple_Account = mongoose.model('Ripple_Account'),
     Ripple_Account_Schema = Ripple_Account.schema,
     mongoose_error_handler = require('./mongoose_error_handling').error_descriptor,
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    parallel = require('async').parallel;
 
 
 
@@ -142,6 +143,21 @@ UserSchema.statics.save_user_and_wallet = function(user, wallet, callback) {
     });
 };
 
+UserSchema.methods.find_transaction = function(callback) {
+    // Finds all the Ripple transactions the users ripple account has been involved
+    // With, then updates transactions so show phone_numbers instead of
+    // Ripple accounts.
+    var self = this;
+    self.ripple_account[0].previous_transactions(function(success, transactions){
+        if(!success) {
+            return callback(false)
+        }
+        User
+    })
+
+
+}
+
 
 // Creates a constructor created from schema definitions (for UserSchema)
 // Which allows us to produce instances (documents) that these models represent
@@ -165,4 +181,12 @@ var check_if_number_exists = function (number, callback) {
         }
     });
 };
+
+var update_transaction = function (transaction, callback) {
+
+    User.find({"ripple_account.0.address": transaction.from}, function(err, document) {
+        if(err || !document) return callback(false)
+
+    } )
+}
 

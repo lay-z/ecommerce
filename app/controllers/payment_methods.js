@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
     Ripple_Account = mongoose.model('Ripple_Account'),
     Payment_Request = mongoose.model('Payment_Request'),
     Retailer = mongoose.model('Retailer'),
+    Transaction = mongoose.model('Transaction'),
     assert = require('assert'),
     BANK = require('../../config/config').bank;
 
@@ -44,6 +45,13 @@ module.exports.pay_user = function(req, res) {
                 return res.status(400).json(response);
             }
             res.json(response);
+
+            var transaction = new Transaction(Ripple_Account.process_transaction(response));
+            transaction.to = req.body.payee;
+            transaction.from = user.phone_number;
+            transaction.save(function(err) {
+                if(err) console.log(err);
+            });
         });
     });
 };
@@ -136,12 +144,20 @@ module.exports.payout_request = function (req, res) {
                     if (err) console.log("Error saving request:\n%s", request)
                 });
 
-                // Return confirmatory message if succesfull
+                // Return confirmatory message if succesful
                 res.json({
                     success: true,
-                    message: "Succesfully completed payment",
+                    message: "Succesfully completed payment to retailer",
                     request: request
                 })
+
+                // Save to transaction into transactions database
+                var transaction = new Transaction(Ripple_Account.process_transaction(body));
+                transaction.to = retailer.business_name;
+                transaction.from = user.phone_number;
+                transaction.save(function(err) {
+                    if(err) console.log(err);
+                });
             })
         })
     })
