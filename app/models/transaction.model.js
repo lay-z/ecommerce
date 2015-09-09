@@ -29,6 +29,9 @@ var Transaction_Schema = new Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    direction: {
+        type: String
     }
 });
 
