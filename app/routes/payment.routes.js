@@ -13,4 +13,6 @@ module.exports.routes = function(app) {
                             middleware.decrypt_secret, payment_methods.deposit);
     app.post("/v1/user/payment_request/:request", digest_authentication,
                             json_parser, middleware.decrypt_secret, payment_methods.payout_request)
+    app.get("/v1/user/transactions", digest_authentication, json_parser,
+                                                    payment_methods.retrieve_transactions);
 };

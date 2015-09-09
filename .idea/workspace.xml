@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4caa3c7d-d36e-4be9-915c-10b7799809f9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/models/transaction.model.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/models.js" afterPath="$PROJECT_DIR$/app/models/models.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/routes/payment.routes.js" afterPath="$PROJECT_DIR$/app/routes/payment.routes.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/payment_methods.js" afterPath="$PROJECT_DIR$/app/controllers/payment_methods.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/ripple.model.js" afterPath="$PROJECT_DIR$/app/models/ripple.model.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/tests/ripple.model.tests.js" afterPath="$PROJECT_DIR$/app/tests/ripple.model.tests.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/user.model.js" afterPath="$PROJECT_DIR$/app/models/user.model.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ecommerce.iws" />
@@ -62,8 +58,8 @@
       <file leaf-file-name="payment_methods.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.71666664">
-              <caret line="50" column="17" selection-start-line="50" selection-start-column="17" selection-end-line="50" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.33333334">
+              <caret line="169" column="104" selection-start-line="169" selection-start-column="104" selection-end-line="169" selection-end-column="104" />
               <folding />
             </state>
           </provider>
@@ -73,7 +69,7 @@
         <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="91" selection-start-line="14" selection-start-column="91" selection-end-line="14" selection-end-column="91" />
+              <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
               <folding />
             </state>
           </provider>
@@ -198,12 +194,12 @@
         <option value="$PROJECT_DIR$/app/models/mongoose_error_handling.js" />
         <option value="$PROJECT_DIR$/app/controllers/user.controller.js" />
         <option value="$PROJECT_DIR$/server.js" />
-        <option value="$PROJECT_DIR$/app/routes/payment.routes.js" />
         <option value="$PROJECT_DIR$/app/models/models.js" />
         <option value="$PROJECT_DIR$/app/tests/ripple.model.tests.js" />
         <option value="$PROJECT_DIR$/app/models/user.model.js" />
         <option value="$PROJECT_DIR$/app/models/ripple.model.js" />
         <option value="$PROJECT_DIR$/app/models/transaction.model.js" />
+        <option value="$PROJECT_DIR$/app/routes/payment.routes.js" />
         <option value="$PROJECT_DIR$/app/controllers/payment_methods.js" />
       </list>
     </option>
@@ -873,7 +869,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441742819196</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="All transactions are now saved to transactions collection for retrieval at a later date">
+      <created>1441822606694</created>
+      <option name="number" value="00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1441822606694</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TodoView">
@@ -941,7 +943,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Users can deposit, and transfer money" />
     <MESSAGE value="Placed paypal and ripple config information into config file.&#10;Modified package script to change NODE_ENV to test (rather than doing manually in individual test files)" />
     <MESSAGE value="created payouts method in paypal_methods" />
     <MESSAGE value="Changed passwords to pins, and users pin numbers are now stored as salted hashes along side salts.&#10;Testing for users also completed" />
@@ -966,7 +967,8 @@
     <MESSAGE value="BUGFIX: log_out_device did not allow users to log back in again" />
     <MESSAGE value="added logging features and removed authentication requirements for deposit money" />
     <MESSAGE value="User required to pass phone_number as final argument for deposit" />
-    <option name="LAST_COMMIT_MESSAGE" value="User required to pass phone_number as final argument for deposit" />
+    <MESSAGE value="All transactions are now saved to transactions collection for retrieval at a later date" />
+    <option name="LAST_COMMIT_MESSAGE" value="All transactions are now saved to transactions collection for retrieval at a later date" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1309,14 +1311,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="91" selection-start-line="14" selection-start-column="91" selection-end-line="14" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/user.controller.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1359,10 +1353,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/routes/payment.routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.71666664">
-          <caret line="50" column="17" selection-start-line="50" selection-start-column="17" selection-end-line="50" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="169" column="104" selection-start-line="169" selection-start-column="104" selection-end-line="169" selection-end-column="104" />
           <folding />
         </state>
       </provider>

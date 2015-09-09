@@ -46,6 +46,7 @@ module.exports.pay_user = function(req, res) {
             }
             res.json(response);
 
+            // Save transaction to transactions table
             var transaction = new Transaction(Ripple_Account.process_transaction(response));
             transaction.to = req.body.payee;
             transaction.from = user.phone_number;
@@ -161,4 +162,31 @@ module.exports.payout_request = function (req, res) {
             })
         })
     })
+}
+
+module.exports.retrieve_transactions = function(req, res) {
+    // Finds and returns array of transactions that user has been involved with
+    // Appends whether the transaction was incoming or outgoing
+    Transaction.find({ $or:[ {to:req.user.phone_number}, {from:req.user.phone_number} ]}, null, {sort: '-date'}, function(err, documents) {
+
+        if(err) return res.status(500).json({
+            success: false,
+            message: "Something went wrong at the server"
+        });
+        if(!documents) return res.status(500).json({
+            success: true,
+            transactions: []
+        });
+        var direction;
+        // Go through each document and append either outgoing or incoming for direction
+        for(var i in documents) {
+            (documents[i].to === req.user.phone_number)? direction = "outgoing":  direction = "incoming"
+            documents[i].direction = direction;
+        }
+        res.json({
+            success: true,
+            transactions: documents
+        })
+    })
+
 }
