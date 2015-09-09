@@ -180,7 +180,7 @@ module.exports.retrieve_transactions = function(req, res) {
         var direction;
         // Go through each document and append either outgoing or incoming for direction
         for(var i in documents) {
-            (documents[i].to === req.user.phone_number)? direction = "outgoing":  direction = "incoming"
+            (documents[i].from === req.user.phone_number)? direction = "outgoing":  direction = "incoming"
             documents[i].direction = direction;
         }
         res.json({
