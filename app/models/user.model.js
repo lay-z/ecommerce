@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
     Ripple_Account_Schema = Ripple_Account.schema,
     mongoose_error_handler = require('./mongoose_error_handling').error_descriptor,
     crypto = require('crypto'),
+    config = require('../../config/config'),
     parallel = require('async').parallel;
 
 
@@ -47,9 +48,13 @@ var UserSchema = new Schema({
 
 UserSchema.methods.generate_salt = function() {
     // Creates a new salt and saves it to the user
-    this.salt = new Buffer(crypto.randomBytes(128).toString('base64'), 'base64');
+    var salt = new Buffer(crypto.randomBytes(128).toString('base64'));
 
-    // TODO encrypt the salt before saving
+    // encrypt the salt before updating the User
+    var cipher = crypto.createCipher('aes128', config.global_key)
+    var crypted = cipher.update(salt,'base64','base64')
+    crypted += cipher.final('base64');
+    this.salt = crypted;
 };
 
 UserSchema.methods.generateAndSave_deviceIDsecret = function() {
@@ -59,10 +64,13 @@ UserSchema.methods.generateAndSave_deviceIDsecret = function() {
 };
 
 UserSchema.methods.encryptSecret = function(pin) {
-    // TODO decrypt the salt
+    // decrypt the salt
+    var decipherPin = crypto.createDecipher('aes128', config.global_key)
+    var decryptedPin = decipherPin.update(this.salt,'base64','base64')
+    decryptedPin += decipherPin.final('base64');
 
     // Create key using combination of pin and salt
-    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 64, 128, 'sha256'), 'utf8')
+    var key = new Buffer(crypto.pbkdf2Sync(pin, decryptedPin, 64, 128, 'sha256'), 'utf8')
 
     // Create cipher and encrypt to be held in base64
     var cipher = crypto.createCipher('aes128', key)
@@ -76,11 +84,14 @@ UserSchema.methods.decryptSecret = function(pin) {
     // Decrypts ripple secret using pin
     // If pin incorrect returns false
 
-    // TODO decrypt the salt
+    // decrypt the salt
+    var decipherPin = crypto.createDecipher('aes128', config.global_key)
+    var decryptedPin = decipherPin.update(this.salt,'base64','base64')
+    decryptedPin += decipherPin.final('base64');
 
 
     // Create key using combination of pin and salt
-    var key = new Buffer(crypto.pbkdf2Sync(pin, this.salt, 64, 128, 'sha256'), 'utf8')
+    var key = new Buffer(crypto.pbkdf2Sync(pin, decryptedPin, 64, 128, 'sha256'), 'utf8')
 
     // Create cipher and encrypt to be held in base64
     var decipher = crypto.createDecipher('aes128', key)

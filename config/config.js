@@ -17,7 +17,8 @@ var config = {
         USER_PASSWORD: "N79WP6SL5VN3Y3VV",
         SECURITY_SIGNATURE: "AFI6817FgiwVFRY4bJ-G2xqixwsTAPI2wjbjLbhkJZXvTRGQEZsEHtfu",
         APP_ID: "APP-80W284485P519543T"
-    }
+    },
+    global_key: "397f>cP$&u]48F(l9I45Q8k%2{8&IJ"
 };
 
 if(process.env.NODE_ENV === 'test') {
