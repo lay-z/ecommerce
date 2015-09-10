@@ -46,7 +46,7 @@ module.exports.pay_user = function(req, res) {
             }
             res.json({
                    success: true,
-                   message: "Successfully sent " + response.payment.destination_amount.value + " to " + req.body.payee
+                   message: "Successfully sent " + response.payment.destination_amount.value + "KSH to " + req.body.payee
                });
 
             // Save transaction to transactions table
