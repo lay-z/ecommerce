@@ -12,5 +12,6 @@ module.exports.routes = function(app) {
     app.get('/v1/user', digest_authentication, controller.get_ripple_account_information);
     app.get('/v1/user/payment_request', digest_authentication, controller.get_payment_requests);
     app.post('/v1/user/devices', json_parser, controller.log_device);
+    app.post('/v1/user/devices/authCode', json_parser, controller.request_authcode);
     app.post('/v1/user/devices/logout', digest_authentication, controller.log_out_device);
 };

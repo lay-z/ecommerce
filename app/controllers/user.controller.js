@@ -1,9 +1,11 @@
 var mongoose = require('mongoose'),
+    config = require('../../config/config'),
     User = mongoose.model('User'),
     Ripple_Account = mongoose.model('Ripple_Account'),
     Payment_Request = mongoose.model('Payment_Request'),
     assert = require('assert'),
-    BANK = require('../../config/config').bank;
+    twilio = require('twilio')(config.twilio.SID, config.twilio.AUTH),
+    BANK = config.bank;
 
 
 module.exports.save_user = function(req, res) {
@@ -93,31 +95,78 @@ module.exports.get_payment_requests = function(req, res) {
     })
 };
 
+module.exports.request_authcode = function(req, res) {
+    // Checks user exists, and that is not logged in on another device already
+    // If not logged in, then generates a random code which is texted to them (twillio
+    // Use this code to log the device then
+    if(!req.body.phone_number) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid parameter, phone number missing from request"
+        });
+    }
+    User.findOne({phone_number: req.body.phone_number}, function(err, user) {
+        if(err | !user) return res.status(400).json({
+            success:false,
+            message: "Phone number not registered to the service"
+        });
+        // If already has device registered then can't request authcode
+        if(user.device.id) return res.status(400).json({
+            success:false,
+            message: "Number already registered to another device, please log out of that device and then try again"
+        });
+
+        // randomly generate 5 digit string
+        user.device.auth_code = Math.random().toString(32).slice(2).substring(0,5);
+        twilio.messages.create({
+            body: "Your auth code is: " + user.device.auth_code,
+            to: user.phone_number,
+            from: config.twilio.number,
+        }, function(err, message) {
+            console.log(message);
+            if(err) {
+                console.log(err);
+                console.log(message);
+                return res.status(400).json({
+                    success:false,
+                    message: "Error could not send auth code try again later"
+                });
+            }
+            console.log(message)
+            user.save(function(err) {
+                // Send text message informing user
+                if(err) console.log(err);
+                res.json({
+                    success: true
+                })
+            });
+        })
+    })
+};
 
 module.exports.log_device = function(req, res) {
     var bank = new Ripple_Account(BANK);
     // User won't have logged in. Controller checks if phone_number and
     // pin are legit. If they are generates a random deviceID and secret to send back
-    if(!(req.body.phone_number && req.body.pin)) {
+    if(!(req.body.auth_code && req.body.pin)) {
         return res.status(400).json({
             success: false,
-            message: "Invalid paramaters, one or both phone_number " +
+            message: "Invalid paramaters, one or both auth_code " +
                             "and pin are missing from request"
         })
     }
 
-    User.findOne({phone_number:req.body.phone_number}, function(err, user) {
+    User.findOne({"device.auth_code":req.body.auth_code}, function(err, user) {
         if (err | !user) return res.status(400).json({
             success: false,
-            message: "Invalid phone_number; phone_number has not been registered"
+            message: "auth_code not found. Please make a request for a new auth code"
         });
 
         //Check that user doesn't already have a registered device
-        if (user.device.id) {
+        if (user.device.auth_code !== req.body.auth_code) {
             return res.status(400).json({
                 success: false,
-                message: "A device has already been registered " +
-                "please sign out of that before registering any new ones"
+                message: "incorrect auth code, please try again"
             })
         }
 
@@ -146,7 +195,8 @@ module.exports.log_device = function(req, res) {
             User.update({phone_number: user.phone_number}, {
                     "device.id": user.device.id,
                     "device.secret": user.device.secret,
-                    "ripple_account.0.validated": true
+                    "ripple_account.0.validated": true,
+                    "device.auth_code": null
             }, function (err) {
                 if (err) {
                     console.log(err);

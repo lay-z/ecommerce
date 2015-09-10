@@ -18,7 +18,12 @@ var config = {
         SECURITY_SIGNATURE: "AFI6817FgiwVFRY4bJ-G2xqixwsTAPI2wjbjLbhkJZXvTRGQEZsEHtfu",
         APP_ID: "APP-80W284485P519543T"
     },
-    global_key: "397f>cP$&u]48F(l9I45Q8k%2{8&IJ"
+    global_key: "397f>cP$&u]48F(l9I45Q8k%2{8&IJ",
+    twilio: {
+        SID: "ACfa309fd42245a163fd63467382854f81",
+        AUTH: "f1bf6f14083a7da37f03abf0b480224e",
+        number: "441480260116"
+    }
 };
 
 if(process.env.NODE_ENV === 'test') {

@@ -42,6 +42,9 @@ var UserSchema = new Schema({
         },
         secret: {
             type: String
+        },
+        auth_code: {
+            type: String
         }
     }
 });
