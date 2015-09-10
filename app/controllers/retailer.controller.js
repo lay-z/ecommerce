@@ -48,7 +48,7 @@ module.exports.submit_request = function(req, res) {
         });
         if(!user) return res.status(400).json( {
             success: false,
-            message: "customer_number is not registered to this service"
+            message: "customer_number is not registered to the service"
         })
 
         // Add extra details try save it to disk
@@ -95,7 +95,7 @@ module.exports.get_payment_requests = function(req, res) {
 };
 
 module.exports.get_payment_request = function(req, res) {
-    var no_requests = {success:false, message: "Request id: " + req.params.id +" does not exist or cannot be accessed by this user"};
+    var no_requests = {success:false, message: "Request id: " + req.params.id +" does not exist or cannot be accessed by retailer"};
 
     // Returns array of all request objects that have been made by retailer
     var retailer = req.user;

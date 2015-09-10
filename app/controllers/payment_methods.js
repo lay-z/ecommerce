@@ -44,7 +44,10 @@ module.exports.pay_user = function(req, res) {
             if(err) {
                 return res.status(400).json(response);
             }
-            res.json(response);
+            res.json({
+                   success: true,
+                   message: "Successfully sent " + response.payment.destination_amount.value + " to " + req.body.payee
+               });
 
             // Save transaction to transactions table
             var transaction = new Transaction(Ripple_Account.process_transaction(response));
@@ -133,11 +136,7 @@ module.exports.payout_request = function (req, res) {
                 amount: request.amount.value
             };
             user.ripple_account[0].send_payment(options, function(err, body) {
-                if(err | !body.success) return res.status(400).json({
-                    success: false,
-                    message: "Ripple payment failed",
-                    details: body
-                })
+                if(err | !body.success) return res.status(400).json(body);
                 console.log(body);
                 // If payment validated then update request to have UUID placed onto payment
                 request.proof_of_payment = body.hash;

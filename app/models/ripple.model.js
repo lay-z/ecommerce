@@ -67,7 +67,27 @@ Ripple_Account_Schema.methods.send_payment = function(options, callback) {
             url : '/v1/accounts/' + self.address + '/payments?validated=true',
             body: payment
         };
-        submit(post_args, callback)
+        submit(post_args, function(err, body) {
+           if(err) {
+               // Check for causes of submission failure
+               // If because user doesn't have enough money
+               if(body.error === "tecPATH_PARTIAL") {
+                   return callback(err, {
+                       success: false,
+                       message: "Insufficient funds in account to make payment"
+                   })
+               }
+
+               // Final error message in case no cases are met
+               return callback(err, {
+                   success: false,
+                   message: "Error making payment, please try again later"
+               })
+           } else {
+               // For successful transmission
+               callback(null, body);
+           }
+        });
     });
 };
 

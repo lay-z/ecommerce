@@ -13,7 +13,7 @@ module.exports.save_user = function(req, res) {
         User.save_user_and_wallet(req.body, wallet, function (err) {
             if (err) return res.status(400).json(err);
 
-            res.json({success: true});
+            res.json({success: true, message:"Succesfully registered " + req.body.phone_number + " to service"});
         });
     });
 };
@@ -155,6 +155,7 @@ module.exports.log_device = function(req, res) {
 
                 res.json({
                     success: true,
+                    message: "Successfully logged in to device",
                     deviceID: user.device.id,
                     secret: user.device.secret
                 })
@@ -167,10 +168,11 @@ module.exports.log_device = function(req, res) {
 module.exports.log_out_device = function(req, res) {
     // Assumes user has been digest-authenticated
     User.update({phone_number:req.user.phone_number}, {$unset:{device:""}}, function(err) {
-        if(err) return res.send(500).json({success: false, message: "Could not log out user"})
+        if(err) return res.send(500).json({success: false, message: "Could not log out user"});
 
         res.json({
-            success: true
+            success: true,
+            message: "Successfully logged out of device"
         })
     })
 }
