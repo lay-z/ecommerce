@@ -1,127 +1,113 @@
-<!DOCTYPE HTML>
-<html lang="en" ng-app="store">
-<head>
-	<meta charset='utf-8'>
-	<!-- So as to make it compaitable on phones, ensures proper rending and touch zooming -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Shopping Cart</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="assets/css/custom.css"/>		
+	</head>
 
-	<title>homepage</title>
-
-	<!-- Bootstrap -->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/custom.css" rel="stylesheet">
-	<!--Angular-->
-	<link href="js/angular.js" >
-
-
-</head>
-
-<body>
-	<!-- Navigation bar -->
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-		    <div class="navbar-header">
-		    	<a class="navbar-brand" href="#">
-		    		<img alt='Brand' src='images/logo-small.jpg'>
-		    	</a>
-		     	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-		       		<span class="sr-only">Toggle navigation</span>
-			        <span class="icon-bar"></span>
-			        <span class="icon-bar"></span>
-			        <span class="icon-bar"></span>
-					</button>
-		    </div>
-
-		    <!-- Collect the nav links, forms, and other content for toggling -->
-		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		     	<ul class="nav navbar-nav">
-			     	<li><a href="#">shop</a></li>
-			     	<li><a href="#">wallet</a></li>
-			     	<li><a href="#">sell</a></li>
-	      	</ul>
-		      	<ul class="nav navbar-nav navbar-right">
-			        <li class="dropdown">
-			          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Account <span class="caret"></span></a>
-				        <ul class="dropdown-menu">
-				            <li><a href="#">Action</a></li>
-				            <li><a href="#">Another action</a></li>
-				            <li><a href="#">Something else here</a></li>
-				            <li role="separator" class="divider"></li>
-				            <li><a href="#">logout</a></li>
-				        </ul>
-		        	</li>
-		      	</ul>
-		  	</div><!-- /.navbar-collapse -->
-		</div><!-- /.container-fluid -->
-	</nav>
-	<!-- endof navigation bar -->
-
-    <div class = "container-fluid">
-        <!-- side bar for searching -->
-        <div class = 'row'>
-            <div class='col-md-3'>
-                <div class = 'box outline '>
-                    box content
-                </div>
-            </div>
-
-            <!-- Section for viewing content -->
-            <div class='col-md-9' ng-controller="ViewController">
-                <div class = 'row'>
-                    <div class='col-md-4 col-lg-3 full'>
-                        <p class = 'outline '>{{data.member}}</p>
-                    </div>
-                    <div class='col-md-4 col-lg-3'>
-                        <p class = 'outline '>test {{4 + 4}}</p>
-                    </div>
-                    <div class="col-md-4 col-lg-3" >
-                        this is going to always be underneath
-                    </div>
-                </div>
-            </div> <!-- end of viewing content -->
-        </div> <!-- end of row 2 -->
-
-		<div>
-			<form action="/v1/createUser" method="post" Content-type = "application/json" id="testForm">
-
-					Pin: <input name = "pin" type="password" class="form-control" id="pin_input" placeholder="123456">
-					First Name: <input name = "first_name" type="text" class="form-control" id="firstname_input" placeholder="First Name">
-					Surname: <input name = "surname" type="text" class="form-control" id="surname_input" placeholder="Surame">
-					Phone Number: <input name = "phone_number"  type="tel" class="form-control" id="phone_number_input" placeholder="0779123123">
-					<!--<input type="submit" value = "Submit">-->
-			</form>
+	<body>
+		
+		<nav class="navbar">
+			<div class="container">
+				<a class="navbar-brand" href="#">Your online store</a>
+				<div class="navbar-right">
+					<div class="container minicart"></div>
+				</div>
+			</div>
+		</nav>
+		
+		<div class="container-fluid breadcrumbBox text-center">
+			<ol class="breadcrumb">
+				<li><a href="#">Review</a></li>
+				<li class="active"><a href="#">Order</a></li>
+				<li><a href="#">Payment</a></li>
+			</ol>
 		</div>
-		<button id="ajaxbutton">Send of AJAX post</button>
+		
+		<div class="container text-center">
 
-    </div>
+			<div class="col-md-5 col-sm-12">
+				<div class="bigcart"></div>
+				<h1>Your shopping cart</h1>
+				<p>
+					This is a free and <b><a href="http://tutorialzine.com/2014/04/responsive-shopping-cart-layout-twitter-bootstrap-3/" title="Read the article!">responsive shopping cart layout, made by Tutorialzine</a></b>. It looks nice on both desktop and mobile browsers. Try it by resizing your window (or opening it on your smartphone and pc).
+				</p>
+			</div>
+			
+			<div class="col-md-7 col-sm-12 text-left">
+				<ul>
+					<li class="row list-inline columnCaptions">
+						<span>QTY</span>
+						<span>ITEM</span>
+						<span>Price</span>
+					</li>
+					<li class="row">
+						<span class="quantity">1</span>
+						<span class="itemName" id="item_description">Bullet-proof vest</span>
+						<span class="popbtn"  data-parent="#asd" data-toggle="collapse" data-target="#demo"><a class="arrow"></a></span>
+						<span class="price">450.00/~</span>				
+					</li>
+					<li class="row totals">
+						<span class="itemName">Total:</span>
+						<span class="price" id="price_value">450.00</span>
+						<form id = "phone_form">
+							phone_number: <input type="text" name="phone_number" id="phone_number_form">
+						</form>
+						<button class="order" id="order_items"> <a class="text-center">ORDER</a></button>
+					</li>
+				</ul>
+			</div>
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/angular.js" ></script>
-	<script type="text/javascript" src="js/app.js" ></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script>
-		$(document).ready(function(){
-			$("#ajaxbutton").click(function(){
-                console.log($('#testForm').serializeObect())
-				$.ajax({
-					type: "POST",
-					url: "v1/user/createUser",
-					data: JSON.stringify($('#testForm :input')),
-					contentType: 'application/json; charset=UTF-8',
-                    dataType: 'json',
-                    success: function(result){
-                        console.log(result);
-                    },
-                    error: function(xhr, status, error) {
-                        window.alert(JSON.parse(xhr.responseText).message);
-                    }
-				});
+		</div>
+
+		<!-- The popover content -->
+
+		<div id="popover" style="display: none">
+			<a href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+			<a href="#"><span class="glyphicon glyphicon-remove"></span></a>
+		</div>
+		
+		<!-- JavaScript includes -->
+
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script> 
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/customjs.js"></script>
+		// For digest authentication
+		<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+    <script type="text/javascript" src="assets/js/digestAuthRequest.js"></script>
+		<script>
+			$(document).ready(function(){
+			$("#order_items").click(function(){
+				// Create the request payment object
+				var payment_object = {
+					customer_number: $('#phone_number_form').val(),
+					amount: {
+						currency: "KSH",
+						value: $('#price_value').text()
+					},
+					description: $('#item_description').text(),
+					callback_url: "http://test.com"
+				};
+				var url = "/v1/retailer/payment_request";
+				var username = "55f2bc48178478a4aee2b655";
+				var password = "KO8+WGwqgjCvg2SkKvHeK8EqasE6ThYTXLZdACa2A1g=";
+				var postData = JSON.stringify(payment_object);
+				var postReq = new digestAuthRequest('POST', url, username, password);
+
+				postReq.request(function(data) { 
+					alert("success!!");
+					console.log(data)
+				},function(errorCode) { 
+					alert("failure!!");
+					console.log(errorCode)
+				}, postData);
 			});
 		});
-	</script>
-</body>
-</html>
+		</script
 
+	</body>
+</html>
