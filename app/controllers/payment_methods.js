@@ -109,6 +109,7 @@ module.exports.payout_request = function (req, res) {
             request.save(function(err) {
                 if(err) console.log("Couldn't save request");
             });
+            request.webhook_callback(request);
             return res.json({
                 success: true,
                 message: "Payment has been cancelled"
@@ -150,6 +151,8 @@ module.exports.payout_request = function (req, res) {
                     message: "Succesfully completed payment to retailer",
                     request: request
                 })
+
+                request.webhook_callback(request);
 
                 // Save to transaction into transactions database
                 var transaction = new Transaction(Ripple_Account.process_transaction(body));
