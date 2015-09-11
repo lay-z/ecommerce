@@ -89,8 +89,8 @@
       <file leaf-file-name="payment_methods.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.38055557">
-              <caret line="111" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5694444">
+              <caret line="157" column="48" selection-start-line="157" selection-start-column="48" selection-end-line="157" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -813,7 +813,13 @@
       <option name="project" value="LOCAL" />
       <updated>1441972783848</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Added webhook callback">
+      <created>1441974117518</created>
+      <option name="number" value="00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1441974117518</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TodoView">
@@ -881,7 +887,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Retailers are able to upload payment requests and users are able to see these and either pay or cancel" />
     <MESSAGE value="Retailers and users can query to see either only paid or unpaid requests" />
     <MESSAGE value="Ripple secret now stored in encrypted form (have probably broken all the tests now)" />
     <MESSAGE value="Decrypt now catches incorrect pins and returns false" />
@@ -906,7 +911,8 @@
     <MESSAGE value="Now encrypting the users salt with global config key." />
     <MESSAGE value="Added 2Factor authentication login" />
     <MESSAGE value="Added retailer website thing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added retailer website thing" />
+    <MESSAGE value="Added webhook callback" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added webhook callback" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1303,8 +1309,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/payment_methods.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38055557">
-          <caret line="111" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5694444">
+          <caret line="157" column="48" selection-start-line="157" selection-start-column="48" selection-end-line="157" selection-end-column="48" />
           <folding />
         </state>
       </provider>
